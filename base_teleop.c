@@ -67,7 +67,7 @@ task main() {
 		if (joy1Btn(2) && lastAcquirerActive == 0) {
 			acquirerActive = !acquirerActive;
 			if (acquirerActive) {
-				motor[acquirer] = -100;
+				motor[acquirer] = -50;
 			} else {
 				motor[acquirer] = 0;
 			}
