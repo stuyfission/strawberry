@@ -6,8 +6,8 @@
 #pragma config(Motor,  mtr_S1_C2_2,     liftR,         tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_1,     acquirer,      tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_2,     blank,         tmotorTetrix, openLoop)
-#pragma config(Servo,  srvo_S1_C4_1,    goalClamp,            tServoNone)
-#pragma config(Servo,  srvo_S1_C4_2,    servo2,               tServoNone)
+#pragma config(Servo,  srvo_S1_C4_1,    goalClamp,            tServoStandard)
+#pragma config(Servo,  srvo_S1_C4_2,    liftBox,              tServoStandard)
 #pragma config(Servo,  srvo_S1_C4_3,    servo3,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C4_5,    servo5,               tServoNone)
@@ -54,14 +54,11 @@ task main() {
       y2 = 0;
     }
 
-    // Joystick buttons 6 and 8 rotate the servo that clamps the
-    // rolling goals on and off.
-	 	if (joy1Btn(6)) {
-	 		servo[goalClamp] = 255;
-	 	}
-	 	if (joy1Btn(8)) {
-	 		servo[goalClamp] = 0;
-	 	}
+		// Joystick button 1 toggles the drive mode on and off.
+		if (joy1Btn(1) && lastControlDriveMode == 0) {
+			controlDriveMode = !controlDriveMode;
+		}
+		lastControlDriveMode = joy1Btn(1);
 
 	 	// Joystick button 2 toggles the acquirer on and off.
 		if (joy1Btn(2) && lastAcquirerActive == 0) {
@@ -74,21 +71,44 @@ task main() {
 		}
 		lastAcquirerActive = joy1Btn(2);
 
-		// Joystick button 1 toggles the drive mode on and off.
-		if (joy1Btn(1) && lastControlDriveMode == 0) {
-			controlDriveMode = !controlDriveMode;
-		}
-		lastControlDriveMode = joy1Btn(1);
-
 	  if (controlDriveMode) {
-			motor[driveL] = controlModeSpeed * -(y1 / abs(y1));
-			motor[driveR] = controlModeSpeed * -(y2 / abs(y2));
+			motor[driveL] = controlModeSpeed * (y1 / abs(y1));
+			motor[driveR] = controlModeSpeed * (y2 / abs(y2));
 		} else {
-		 	motor[driveL] = -y1;
-		 	motor[driveR] = -y2;
+		 	motor[driveL] = y1;
+		 	motor[driveR] = y2;
 		}
 
-		// Shuts off the teleop program.
+	 	// Joystick button 4 will release the balls from the lifted box.
+	 	if (joy1Btn(4)) {
+	 		servo[liftBox] = 90;
+	 	} else {
+	 		servo[liftBox] = 225;
+	 	}
+
+    // Joystick buttons 5 and 7 raise and lower the lift mechanism.
+    if (joy1Btn(5)) {
+    	motor[liftL] = 100;
+    	motor[liftR] = 100;
+    } else if (joy1Btn(7)) {
+    	motor[liftL] = -100;
+    	motor[liftR] = -100;
+    } else {
+  		motor[liftL] = 0;
+  		motor[liftR] = 0;
+  	}
+
+    // Joystick buttons 6 and 8 rotate the servo that clamps the
+    // rolling goals on and off.
+	 	if (joy1Btn(6)) {
+	 		servo[goalClamp] = 0;
+	 	}
+	 	if (joy1Btn(8)) {
+	 		servo[goalClamp] = 200;
+	 	}
+
+		// Shuts off the teleop program if joystick buttons 9 and 10
+		// are pressed simultaneously.
 		teleopRunning = !(joy1Btn(9) && joy1Btn(10));
 
 		// Outputs the joystick states to the screen.
@@ -98,4 +118,5 @@ task main() {
 		nxtDisplayString(4, "X1: %i", x1);
 		nxtDisplayString(5, "Y1: %i", y1);
 	}
+	StopAllTasks();
 }
