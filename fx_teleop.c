@@ -1,18 +1,20 @@
-#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTServo)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     HTSPB,                sensorI2CCustom9V)
-#pragma config(Motor,  mtr_S1_C1_1,     driveL,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C1_2,     driveR,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_1,     liftL,         tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_2,     liftR,         tmotorTetrix, openLoop)
+#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTMotor)
+#pragma config(Hubs,  S2, HTServo,  none,     none,     none)
+#pragma config(Sensor, S3,     HTSPB,          sensorI2CMuxController)
+#pragma config(Motor,  mtr_S1_C1_1,     driveFL,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     driveBL,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_1,     lift1,         tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_2,     lift2,         tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_1,     acquirer,      tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_2,     blank,         tmotorTetrix, openLoop)
-#pragma config(Servo,  srvo_S1_C4_1,    goalClamp,            tServoStandard)
-#pragma config(Servo,  srvo_S1_C4_2,    liftBox,              tServoStandard)
-#pragma config(Servo,  srvo_S1_C4_3,    servo3,               tServoNone)
-#pragma config(Servo,  srvo_S1_C4_4,    servo4,               tServoNone)
-#pragma config(Servo,  srvo_S1_C4_5,    servo5,               tServoNone)
-#pragma config(Servo,  srvo_S1_C4_6,    servo6,               tServoNone)
+#pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
+#pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_2,    liftBox,              tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
 
 #include "JoystickDriver.c"
 
@@ -62,11 +64,15 @@ task main() {
     lastControlDriveMode = joy1Btn(1);
 
     if (controlDriveMode) {
-      motor[driveL] = controlModeSpeed * (y1 / abs(y1));
-      motor[driveR] = controlModeSpeed * (y2 / abs(y2));
+      motor[driveFL] = controlModeSpeed * (y1 / abs(y1));
+      motor[driveBL] = controlModeSpeed * (y1 / abs(y1));
+      motor[driveFR] = controlModeSpeed * (y2 / abs(y2));
+      motor[driveBR] = controlModeSpeed * (y2 / abs(y2));
     } else {
-      motor[driveL] = y1;
-      motor[driveR] = y2;
+      motor[driveFL] = y1;
+      motor[driveBL] = y1;
+      motor[driveFR] = y2;
+      motor[driveBR] = y2;
     }
 
     // Joystick 1 buttons 5 and 7 clamp the rolling goal.
@@ -107,14 +113,14 @@ task main() {
     // Joystick 2 buttons 5 and 6 raise the lift mechanism.
     // Joystick 2 buttons 7 and 8 lower the lift mechanism.
     if (joy2Btn(5) || joy2Btn(6)) {
-      motor[liftL] = 100;
-      motor[liftR] = 100;
+      motor[lift1] = 100;
+      motor[lift2] = 100;
     } else if (joy2Btn(7) || joy2Btn(8)) {
-      motor[liftL] = -100;
-      motor[liftR] = -100;
+      motor[lift1] = -100;
+      motor[lift2] = -100;
     } else {
-      motor[liftL] = 0;
-      motor[liftR] = 0;
+      motor[lift1] = 0;
+      motor[lift2] = 0;
     }
   }
 }
