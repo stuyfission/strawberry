@@ -81,9 +81,9 @@ task main() {
 
 	 	// Joystick button 4 will release the balls from the lifted box.
 	 	if (joy1Btn(4)) {
-	 		servo[liftBox] = 90;
+	 		servo[liftBox] = 150;
 	 	} else {
-	 		servo[liftBox] = 225;
+	 		servo[liftBox] = 0;
 	 	}
 
     // Joystick buttons 5 and 7 raise and lower the lift mechanism.
