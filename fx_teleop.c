@@ -6,7 +6,7 @@
 #pragma config(Motor,  mtr_S1_C2_1,     lift1,         tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_2,     lift2,         tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_1,     acquirer,      tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C3_2,     blank,         tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C3_2,     blankMotor,         tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
@@ -23,8 +23,12 @@
  * Authored by Alvin Lin (alvin.lin@stuypulse.com)
  * http://omgimanerd.github.io
  * http://310fission.com
- * This file is a basic teleop program for a tankdrive.
- * It also contains toggle code which will be recycled next year.
+ * This file is the teleop program that f(x) bot will run.
+ * Teleop will be split into driver-operator control.
+ * The driver will control the drivetrain, drive mode, and the
+ * rolling goal clamp.
+ * The operator will control the acquirer, lift, and lift box release,
+ * as well as any miscellaneous lights.
  */
 
 // Control constants.
@@ -32,6 +36,7 @@ const int controlModeSpeed = 20;
 const int joystickThreshold = 25;
 
 task main() {
+	// x1, y1, x2, and y2 store the joystick values for the driver.
   int x1, y1, x2, y2;
   // last* variables are for toggle states
   bool controlDriveMode = false;
@@ -41,6 +46,7 @@ task main() {
 
   while (true) {
     /* JOYSTICK 1 - DRIVETRAIN */
+
     // Update the values of the variables storing the joystick positions.
     getJoystickSettings(joystick);
     x1 = joystick.joy1_x1;
@@ -49,7 +55,7 @@ task main() {
     y2 = joystick.joy1_y2;
 
     // If the joysticks are less than 25 in position, then they
-    // are set to zero as a threshold of movement.
+    // are set to zero as a threshold.
     if (abs(y1) < joystickThreshold) {
       y1 = 0;
     }
@@ -57,8 +63,8 @@ task main() {
       y2 = 0;
     }
 
-    // Joystick button 1 toggles the drive mode on and off.
-    if (joy1Btn(1) && lastControlDriveMode == 0) {
+    // Joystick 1 button 2 toggles the drive mode on and off.
+    if (joy1Btn(2) && lastControlDriveMode == 0) {
       controlDriveMode = !controlDriveMode;
     }
     lastControlDriveMode = joy1Btn(1);
@@ -91,7 +97,8 @@ task main() {
     nxtDisplayString(4, "X1: %i", x1);
     nxtDisplayString(5, "Y1: %i", y1);
 
-    /* JOYSTICK 2 - MECHANISMS */
+    /* JOYSTICK 2 - OPERATOR MECHANISMS */
+
     // Joystick 2 button 2 toggles the acquirer on and off.
     if (joy2Btn(2) && lastAcquirerActive == 0) {
       acquirerActive = !acquirerActive;
