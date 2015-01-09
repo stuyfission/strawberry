@@ -18,8 +18,7 @@
 
 #include "JoystickDriver.c"
 
-task main()
-{
+task main() {
 	while(true) {
 		motor[driveFL] = -50;
 		motor[driveBL] = -50;
@@ -37,10 +36,6 @@ task main()
 			motor[driveFR] = 50;
 			motor[driveBR] = 50;
 		} else {
-			motor[driveFL] = 0;
-			motor[driveBL] = 0;
-			motor[driveFR] = 0;
-			motor[driveBR] = 0;
 		}
 	}
 }
