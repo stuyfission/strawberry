@@ -41,7 +41,7 @@ task main() {
   // last* variables are for toggle states
   bool controlDriveMode = false;
   int lastControlDriveMode = 0;
-  bool reverseDriveMode = false;
+  bool reverseDriveMode = true;
   int lastReverseDriveMode = 0;
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
