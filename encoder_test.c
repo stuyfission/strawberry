@@ -22,7 +22,34 @@
 /**
  */
 
+<<<<<<< HEAD
 task outputEncoderValues() {
+=======
+// Control constants.
+const int controlModeSpeed = 20;
+const int joystickThreshold = 25;
+
+void driveMotors (int encoderTicks, int speed) {
+	encoderClear();
+	while ((nMotorEncoder[left] < encoderTicks) && (nMotorEncoder[right] < encoderTicks)) {
+		motor[left] = speed;
+		motor[right] = speed;
+	}
+	motor[left] = 0;
+	motor[right] = 0;
+	encoderClear();
+}
+
+task main() {
+	// x1, y1, x2, and y2 store the joystick values for the driver.
+  int x1, y1, x2, y2;
+  // last* variables are for toggle states
+  bool controlDriveMode = false;
+  int lastControlDriveMode = 0;
+  bool acquirerActive = false;
+  int lastAcquirerActive = 0;
+
+>>>>>>> ac20b839961d166b32bd98b845e272532e972ead
   while (true) {
     eraseDisplay();
     nxtDisplayString(2, "FLEnc: %i", nMotorEncoder[driveFL]);
