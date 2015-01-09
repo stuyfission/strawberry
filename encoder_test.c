@@ -22,35 +22,8 @@
 /**
  */
 
-<<<<<<< HEAD
 task outputEncoderValues() {
-=======
-// Control constants.
-const int controlModeSpeed = 20;
-const int joystickThreshold = 25;
-
-void driveMotors (int encoderTicks, int speed) {
-	encoderClear();
-	while ((nMotorEncoder[left] < encoderTicks) && (nMotorEncoder[right] < encoderTicks)) {
-		motor[left] = speed;
-		motor[right] = speed;
-	}
-	motor[left] = 0;
-	motor[right] = 0;
-	encoderClear();
-}
-
-task main() {
-	// x1, y1, x2, and y2 store the joystick values for the driver.
-  int x1, y1, x2, y2;
-  // last* variables are for toggle states
-  bool controlDriveMode = false;
-  int lastControlDriveMode = 0;
-  bool acquirerActive = false;
-  int lastAcquirerActive = 0;
-
->>>>>>> ac20b839961d166b32bd98b845e272532e972ead
-  while (true) {
+	while (true) {
     eraseDisplay();
     nxtDisplayString(2, "FLEnc: %i", nMotorEncoder[driveFL]);
     nxtDisplayString(3, "BLEnc: %i", nMotorEncoder[driveBL]);
@@ -67,18 +40,40 @@ void clearEncoders() {
 	nMotorEncoder[driveBR] = 0;
 }
 
-task main() {
-	StartTask(outputEncoderValues);
+void driveMotors(int encoderTicks, int speed) {
 	clearEncoders();
-	while (abs(nMotorEncoder[driveFL]) < 10000) {
-		motor[driveFL] = -50;
-		motor[driveBL] = -50;
-		motor[driveFR] = 50;
-		motor[driveBR] = 50;
+	while (abs(nMotorEncoder[driveFL]) < encoderTicks &&
+				 abs(nMotorEncoder[driveFR]) < encoderTicks) {
+		motor[driveFL] = -speed;
+		motor[driveBL] = -speed;
+		motor[driveFR] = speed;
+		motor[driveBR] = speed;
 	}
 	motor[driveFL] = 0;
 	motor[driveBL] = 0;
 	motor[driveFR] = 0;
 	motor[driveBR] = 0;
+	clearEncoders();
+}
+
+void rotate180() {
+	clearEncoders();
+	while (abs(nMotorEncoder[driveFL]) < encoderTicks &&
+				 abs(nMotorEncoder[driveFR]) < encoderTicks) {
+		motor[driveFL] = speed;
+		motor[driveBL] = speed;
+		motor[driveFR] = speed;
+		motor[driveBR] = speed;
+	}
+	motor[driveFL] = 0;
+	motor[driveBL] = 0;
+	motor[driveFR] = 0;
+	motor[driveBR] = 0;
+	clearEncoders();
+}
+
+task main() {
+	StartTask(outputEncoderValues);
+	driveMotors(5000, -100);
 	wait1Msec(10000);
 }
