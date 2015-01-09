@@ -103,10 +103,10 @@ task main() {
 
     // Joystick buttons 5 and 7 clamp the rolling goal.
     // Joystick buttons 6 and 8 release the rolling goal clamp.
-    if (joy1Btn(6) || joy1Btn(5)) {
+    if (joy1Btn(7)) {
       servo[goalClamp] = 0;
     }
-    if (joy1Btn(7) || joy1Btn(8)) {
+    if (joy1Btn(5)) {
       servo[goalClamp] = 200;
     }
 
@@ -142,15 +142,15 @@ task main() {
     if (joy1Btn(4)) {
       servo[liftBox] = 225;
     } else {
-      servo[liftBox] = 90;
+      servo[liftBox] = 0;
     }
 
     // Joystick buttons 5 and 6 raise the lift mechanism.
     // Joystick buttons 7 and 8 lower the lift mechanism.
-    if (joy1Btn(5) || joy1Btn(6)) {
+    if (joy1Btn(6)) {
       motor[lift1] = 100;
       motor[lift2] = 100;
-    } else if (joy1Btn(7) || joy1Btn(8)) {
+    } else if (joy1Btn(8)) {
       motor[lift1] = -100;
       motor[lift2] = -100;
     } else {
