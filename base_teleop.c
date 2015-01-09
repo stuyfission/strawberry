@@ -41,7 +41,7 @@ task main() {
   // last* variables are for toggle states
   bool controlDriveMode = false;
   int lastControlDriveMode = 0;
-  bool reverseDriveMode = false;
+  bool reverseDriveMode = true;
   int lastReverseDriveMode = 0;
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
@@ -63,13 +63,13 @@ task main() {
       y2 = 0;
     }
 
-    // Joystick 1 button 1 toggles the drive mode between reverse and regular.
+    // Joystick button 1 toggles the drive mode between reverse and regular.
     if (joy1Btn(1) && lastReverseDriveMode == 0) {
     	reverseDriveMode = !reverseDriveMode;
     }
     lastReverseDriveMode = joy1Btn(1);
 
-    // Joystick 1 button 2 toggles the drive mode between slow and fast.
+    // Joystick button 2 toggles the drive mode between slow and fast.
     if (joy1Btn(2) && lastControlDriveMode == 0) {
       controlDriveMode = !controlDriveMode;
     }
@@ -101,12 +101,12 @@ task main() {
 	    }
     }
 
-    // Joystick 1 buttons 5 and 7 clamp the rolling goal.
-    // Joystick 1 buttons 6 and 8 release the rolling goal clamp.
-    if (joy1Btn(6) || joy1Btn(5)) {
+    // Joystick buttons 5 and 7 clamp the rolling goal.
+    // Joystick buttons 6 and 8 release the rolling goal clamp.
+    if (joy1Btn(7)) {
       servo[goalClamp] = 0;
     }
-    if (joy1Btn(7) || joy1Btn(8)) {
+    if (joy1Btn(5)) {
       servo[goalClamp] = 200;
     }
 
@@ -127,7 +127,7 @@ task main() {
     	nxtDisplayString(7, "normalDrive");
     }
 
-    // Joystick 2 button 2 toggles the acquirer on and off.
+    // Joystick button 2 toggles the acquirer on and off.
     if (joy1Btn(3) && lastAcquirerActive == 0) {
       acquirerActive = !acquirerActive;
       if (acquirerActive) {
@@ -138,19 +138,19 @@ task main() {
     }
     lastAcquirerActive = joy2Btn(1);
 
-    // Joystick 2 button 3 will release the balls from the lifted box.
-    if (joy2Btn(4)) {
-      servo[liftBox] = 90;
-    } else {
+    // Joystick button 3 will release the balls from the lifted box.
+    if (joy1Btn(4)) {
       servo[liftBox] = 225;
+    } else {
+      servo[liftBox] = 0;
     }
 
-    // Joystick 2 buttons 5 and 6 raise the lift mechanism.
-    // Joystick 2 buttons 7 and 8 lower the lift mechanism.
-    if (joy1Btn(5) || joy1Btn(6)) {
+    // Joystick buttons 5 and 6 raise the lift mechanism.
+    // Joystick buttons 7 and 8 lower the lift mechanism.
+    if (joy1Btn(6)) {
       motor[lift1] = 100;
       motor[lift2] = 100;
-    } else if (joy1Btn(7) || joy1Btn(8)) {
+    } else if (joy1Btn(8)) {
       motor[lift1] = -100;
       motor[lift2] = -100;
     } else {
