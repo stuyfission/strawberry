@@ -20,6 +20,7 @@
 
 // Copyright Stuy Fission 310
 /**
+ * 1120 ticks per 26
  */
 
 task outputEncoderValues() {
@@ -40,40 +41,51 @@ void clearEncoders() {
 	nMotorEncoder[driveBR] = 0;
 }
 
-void driveMotors(int encoderTicks, int speed) {
+void driveMotors(int leftSpeed, int rightSpeed) {
+	motor[driveFL] = -leftSpeed;
+	motor[driveBL] = -leftSpeed;
+	motor[driveFR] = rightSpeed;
+	motor[driveBR] = rightSpeed;
+}
+
+void stopMotors() {
+	driveMotors(0, 0);
+}
+
+int averageMotors(tMotor frontMotor, tMotor backMotor) {
+	return (nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2;
+}
+
+void driveMotors(int leftSpeed, int rightSpeed, int encoderTicks) {
 	clearEncoders();
-	while (abs(nMotorEncoder[driveFL]) < encoderTicks &&
-				 abs(nMotorEncoder[driveFR]) < encoderTicks) {
-		motor[driveFL] = -speed;
-		motor[driveBL] = -speed;
-		motor[driveFR] = speed;
-		motor[driveBR] = speed;
+	while (averageMotors(driveFL, driveBL) < encoderTicks &&
+				 averageMotors(driveFR, driveBR) < encoderTicks) {
+		driveMotors(leftSpeed, rightSpeed);
 	}
-	motor[driveFL] = 0;
-	motor[driveBL] = 0;
-	motor[driveFR] = 0;
-	motor[driveBR] = 0;
+	stopMotors();
 	clearEncoders();
 }
 
-void rotate180() {
+void driveStraight(int encoderTicks, int speed) {
 	clearEncoders();
-	while (abs(nMotorEncoder[driveFL]) < encoderTicks &&
-				 abs(nMotorEncoder[driveFR]) < encoderTicks) {
-		motor[driveFL] = speed;
-		motor[driveBL] = speed;
-		motor[driveFR] = speed;
-		motor[driveBR] = speed;
-	}
-	motor[driveFL] = 0;
-	motor[driveBL] = 0;
-	motor[driveFR] = 0;
-	motor[driveBR] = 0;
+	driveMotors(speed, speed, encoderTicks);
+	stopMotors();
+	clearEncoders();
+}
+
+void rotate90Left() {
+	clearEncoders();
+	driveMotors(100, -100, 1000);
+}
+
+void rotate90Right() {
+	clearEncoders();
+	driveMotors(-100, 100, 1000);
 	clearEncoders();
 }
 
 task main() {
 	StartTask(outputEncoderValues);
-	driveMotors(5000, -100);
-	wait1Msec(10000);
+	clearEncoders();
+	wait1Msec(120000);
 }
