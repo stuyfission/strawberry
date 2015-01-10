@@ -84,8 +84,16 @@ void rotate90Right() {
 	clearEncoders();
 }
 
+void activateLift(int power, int time) {
+	motor[lift1] = power;
+	motor[lift2] = power;
+	wait1Msec(time);
+	motor[lift1] = 0;
+	motor[lift2] = 0;
+}
+
 task main() {
 	StartTask(outputEncoderValues);
-	clearEncoders();
+	activateLift(100, 100);
 	wait1Msec(120000);
 }

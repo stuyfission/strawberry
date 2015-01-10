@@ -17,13 +17,12 @@
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
 
 
-task main()
-{
+task main() {
 	while (true) {
-		if (nNxtButtonPressed = 1) {
+		if (nNxtButtonPressed == 1) {
 			motor[lift1] = 100;
 			motor[lift2] = 100;
-		} else if (nNxtButtonPressed = 2) {
+		} else if (nNxtButtonPressed == 2) {
 			motor[lift1] = -100;
 			motor[lift2] = -100;
 		} else {
