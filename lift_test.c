@@ -16,6 +16,12 @@
 #pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
 
+// Copyright Stuy Fission 310
+/**
+ * Authored by Kenneth Li (kenneth.li@stuypulse.com)
+ * This code runs the lift upwards when the left button is pressed
+ * and downwards when the right button is pressed.
+ */
 
 task main()
 {
