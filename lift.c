@@ -23,13 +23,12 @@
  * and downwards when the right button is pressed.
  */
 
-task main()
-{
+task main() {
 	while (true) {
-		if (nNxtButtonPressed = 1) {
+		if (nNxtButtonPressed == 1) {
 			motor[lift1] = 100;
 			motor[lift2] = 100;
-		} else if (nNxtButtonPressed = 2) {
+		} else if (nNxtButtonPressed == 2) {
 			motor[lift1] = -100;
 			motor[lift2] = -100;
 		} else {
