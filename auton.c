@@ -24,111 +24,111 @@
  */
 
 task outputEncoderValues() {
-	while (true) {
+  while (true) {
     eraseDisplay();
-    nxtDisplayString(2, "FLEnc: %i", nMotorEncoder[driveFL]);
-    nxtDisplayString(3, "BLEnc: %i", nMotorEncoder[driveBL]);
-    nxtDisplayString(4, "FREnc: %i", nMotorEncoder[driveFR]);
-    nxtDisplayString(5, "BREnc: %i", nMotorEncoder[driveBR]);
+    nxtDisplayString(2, "FL: %i", nMotorEncoder[driveFL]);
+    nxtDisplayString(3, "BL: %i", nMotorEncoder[driveBL]);
+    nxtDisplayString(4, "FR: %i", nMotorEncoder[driveFR]);
+    nxtDisplayString(5, "BR: %i", nMotorEncoder[driveBR]);
     wait1Msec(10);
   }
 }
 
 void clearEncoders() {
-	nMotorEncoder[driveFL] = 0;
-	nMotorEncoder[driveBL] = 0;
-	nMotorEncoder[driveFR] = 0;
-	nMotorEncoder[driveBR] = 0;
+  nMotorEncoder[driveFL] = 0;
+  nMotorEncoder[driveBL] = 0;
+  nMotorEncoder[driveFR] = 0;
+  nMotorEncoder[driveBR] = 0;
 }
 
 void driveMotors(int leftSpeed, int rightSpeed) {
-	motor[driveFL] = -leftSpeed;
-	motor[driveBL] = -leftSpeed;
-	motor[driveFR] = rightSpeed;
-	motor[driveBR] = rightSpeed;
+  motor[driveFL] = -leftSpeed;
+  motor[driveBL] = -leftSpeed;
+  motor[driveFR] = rightSpeed;
+  motor[driveBR] = rightSpeed;
 }
 
 void stopMotors() {
-	driveMotors(0, 0);
+  driveMotors(0, 0);
 }
 
 int averageMotors(tMotor frontMotor, tMotor backMotor) {
-	return (nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2;
+  return (nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2;
 }
 
 void driveMotors(int leftSpeed, int rightSpeed, int encoderTicks) {
-	clearEncoders();
-	while (averageMotors(driveFL, driveBL) < encoderTicks &&
-				 averageMotors(driveFR, driveBR) < encoderTicks) {
-		driveMotors(leftSpeed, rightSpeed);
-	}
-	stopMotors();
-	clearEncoders();
+  clearEncoders();
+  while (averageMotors(driveFL, driveBL) < encoderTicks &&
+         averageMotors(driveFR, driveBR) < encoderTicks) {
+    driveMotors(leftSpeed, rightSpeed);
+  }
+  stopMotors();
+  clearEncoders();
 }
 
 void driveStraight(int encoderTicks, int speed) {
-	clearEncoders();
-	driveMotors(speed, speed, encoderTicks);
-	stopMotors();
-	clearEncoders();
+  clearEncoders();
+  driveMotors(speed, speed, encoderTicks);
+  stopMotors();
+  clearEncoders();
 }
 
 void rotate90Left() {
-	clearEncoders();
-	driveMotors(100, -100, 1000);
+  clearEncoders();
+  driveMotors(100, -100, 1000);
 }
 
 void rotate90Right() {
-	clearEncoders();
-	driveMotors(-100, 100, 1000);
-	clearEncoders();
+  clearEncoders();
+  driveMotors(-100, 100, 1000);
+  clearEncoders();
 }
 
 void activateLift(int power, int time) {
-	motor[lift1] = power;
-	motor[lift2] = power;
-	wait1Msec(time);
-	motor[lift1] = 0;
-	motor[lift2] = 0;
+  motor[lift1] = power;
+  motor[lift2] = power;
+  wait1Msec(time);
+  motor[lift1] = 0;
+  motor[lift2] = 0;
 }
 
 // drives down ramp, clamps goal, drives back up
 void auton1() {
-	clearEncoders();
-	driveStraight(250, 50);
-	driveStraight(5500, 100);
-	driveStraight(250, 50);
-	clearEncoders();
-	activateLift(100, 100);
-	servo[liftBox] = 90;
-	wait1Msec(1000);
-	servo[liftBox] = 225;
-	activateLift(-100, 100);
-	servo[goalClamp] = 0;
-	driveStraight(-250, 50);
-	driveStraight(-5500, 100);
-	driveStraight(-250, 50);
-	clearEncoders();
-	wait1Msec(120000);
+  clearEncoders();
+  driveStraight(250, 50);
+  driveStraight(5500, 100);
+  driveStraight(250, 50);
+  clearEncoders();
+  activateLift(100, 100);
+  servo[liftBox] = 90;
+  wait1Msec(1000);
+  servo[liftBox] = 225;
+  activateLift(-100, 100);
+  servo[goalClamp] = 0;
+  driveStraight(-250, 50);
+  driveStraight(-5500, 100);
+  driveStraight(-250, 50);
+  clearEncoders();
+  wait1Msec(120000);
 }
 
 // drives straight?? blocks center
 void auton2() {
-	driveStraight(500, 50);
-	driveStraight(3600, 100);
-	driveStraight(500, 50);
-	wait1Msec(120000);
+  driveStraight(500, 50);
+  driveStraight(3600, 100);
+  driveStraight(500, 50);
+  wait1Msec(120000);
 }
 
 // drives straight as well?? blocks rolling
 void auton3() {
-	driveStraight(500, 50);
-	driveStraight(14400, 100);
-	driveStraight(500, 50);
-	wait1Msec(120000);
+  driveStraight(500, 50);
+  driveStraight(14400, 100);
+  driveStraight(500, 50);
+  wait1Msec(120000);
 }
 
 task main() {
-	StartTask(outputEncoderValues);
-	auton1();
+  StartTask(outputEncoderValues);
+  auton1();
 }

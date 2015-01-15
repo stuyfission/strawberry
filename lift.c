@@ -24,16 +24,16 @@
  */
 
 task main() {
-	while (true) {
-		if (nNxtButtonPressed == 1) {
-			motor[lift1] = 100;
-			motor[lift2] = 100;
-		} else if (nNxtButtonPressed == 2) {
-			motor[lift1] = -100;
-			motor[lift2] = -100;
-		} else {
-			motor[lift1] = 0;
-			motor[lift2] = 0;
-		}
-	}
+  while (true) {
+    if (nNxtButtonPressed == 1) {
+      motor[lift1] = 100;
+      motor[lift2] = 100;
+    } else if (nNxtButtonPressed == 2) {
+      motor[lift1] = -100;
+      motor[lift2] = -100;
+    } else {
+      motor[lift1] = 0;
+      motor[lift2] = 0;
+    }
+  }
 }
