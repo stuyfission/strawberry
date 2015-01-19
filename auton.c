@@ -18,9 +18,12 @@
 
 #include "JoystickDriver.c"
 
+#define TICKS_PER_ROTATION 1120
+
 // Copyright Stuy Fission 310
 /**
- * 1120 ticks per 26
+ * @author Alvin Lin (alvin.lin@stuypulse.com)
+ * Auton for f(x) bot.
  */
 
 task outputEncoderValues() {
@@ -34,18 +37,20 @@ task outputEncoderValues() {
   }
 }
 
+/**
+ * @param inches The number of inches to move forward
+ */
+int toTicks (float inches) {
+	return (int) (inches / (4 * PI)) * TICKS_PER_ROTATION;
+}
+
 void clearEncoders() {
   nMotorEncoder[driveFL] = 0;
   nMotorEncoder[driveBL] = 0;
   nMotorEncoder[driveFR] = 0;
   nMotorEncoder[driveBR] = 0;
-}
-
-void driveMotors(int leftSpeed, int rightSpeed) {
-  motor[driveFL] = -leftSpeed;
-  motor[driveBL] = -leftSpeed;
-  motor[driveFR] = rightSpeed;
-  motor[driveBR] = rightSpeed;
+  nMotorEncoder[lift1] = 0;
+  nMotorEncoder[lift2] = 0;
 }
 
 void stopMotors() {
@@ -56,10 +61,28 @@ int averageMotors(tMotor frontMotor, tMotor backMotor) {
   return (nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2;
 }
 
+/**
+ * Sets the drivetrain to run at a certain speed without stopping.
+ * @param leftSpeed The speed to run the left side of the drivetrain.
+ * @param rightSpeed The speed to run the right side of the drivetrain.
+ */
+void driveMotors(int leftSpeed, int rightSpeed) {
+  motor[driveFL] = -leftSpeed;
+  motor[driveBL] = -leftSpeed;
+  motor[driveFR] = rightSpeed;
+  motor[driveBR] = rightSpeed;
+}
+
+/**
+ * Sets the drivetrain to run at a certain speed for a certain distance.
+ * @param leftSpeed The speed to run the left side of the drivetrain.
+ * @param rightSpeed The speed to run the right side of the drivetrain.
+ * @param encoderTicks The distance in ticks to run the drivetrain for.
+ */
 void driveMotors(int leftSpeed, int rightSpeed, int encoderTicks) {
   clearEncoders();
-  while (averageMotors(driveFL, driveBL) < encoderTicks &&
-         averageMotors(driveFR, driveBR) < encoderTicks) {
+  while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
+         averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
     driveMotors(leftSpeed, rightSpeed);
   }
   stopMotors();
@@ -73,51 +96,50 @@ void driveStraight(int encoderTicks, int speed) {
   clearEncoders();
 }
 
-void rotate90Left() {
+void activateLift(int power, int encoderTicks) {
+	clearEncoders();
+	while (nMotorEncoder[lift1] < abs(encoderTicks) &&
+				 nMotorEncoder[lift2] < abs(encoderTicks)) {
+		motor[lift1] = power;
+    motor[lift2] = power;
+  }
+  stopMotors();
   clearEncoders();
-  driveMotors(100, -100, 1000);
 }
 
-void rotate90Right() {
-  clearEncoders();
-  driveMotors(-100, 100, 1000);
-  clearEncoders();
+// drives down ramp
+void auton0() {
+	clearEncoders();
+  driveStraight(750, -50);
+  driveStraight(5500, -100);
+  wait1Msec(1000);
 }
 
-void activateLift(int power, int time) {
-  motor[lift1] = power;
-  motor[lift2] = power;
-  wait1Msec(time);
-  motor[lift1] = 0;
-  motor[lift2] = 0;
-}
-
-// drives down ramp, clamps goal, drives back up
+// drives down ramp, scores in medium goal
 void auton1() {
+	servo[goalClamp] = 0;//initializes servos
+	servo[liftBox] = 225;	//intiialize servos
   clearEncoders();
-  driveStraight(250, 50);
-  driveStraight(5500, 100);
-  driveStraight(250, 50);
-  clearEncoders();
-  activateLift(100, 100);
+  driveStraight(750, -50);
+  driveStraight(5500, -100);
+  driveMotors(-100, 100, 2900);
+  driveStraight(1500, 100);
+  motor[acquirer] = -50;
+  wait1Msec(1500);
+  motor[acquirer] = 0;
+  activateLift(100, 500);
   servo[liftBox] = 90;
   wait1Msec(1000);
-  servo[liftBox] = 225;
-  activateLift(-100, 100);
-  servo[goalClamp] = 0;
-  driveStraight(-250, 50);
-  driveStraight(-5500, 100);
-  driveStraight(-250, 50);
-  clearEncoders();
-  wait1Msec(120000);
 }
 
-// drives straight?? blocks center
+// drives down center, blocks opposing center goal
 void auton2() {
-  driveStraight(500, 50);
-  driveStraight(3600, 100);
-  driveStraight(500, 50);
-  wait1Msec(120000);
+  clearEncoders();
+  driveStraight(750, -50);
+  driveStraight(5500, -100);
+  driveMotors(-100, 100, 1500);
+  driveStraight(3000, -100);
+  wait1Msec(1000);
 }
 
 // drives straight as well?? blocks rolling
@@ -129,6 +151,9 @@ void auton3() {
 }
 
 task main() {
+	//waitForStart();
   StartTask(outputEncoderValues);
-  auton1();
+
+  activateLift(-100, 500);
+  //auton1();
 }

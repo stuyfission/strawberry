@@ -46,6 +46,7 @@ task main() {
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
 
+  waitForStart();
   while (true) {
     /* JOYSTICK 1 - DRIVETRAIN */
 
@@ -133,7 +134,7 @@ task main() {
     /* JOYSTICK 2 - OPERATOR MECHANISMS */
 
     // Joystick 2 button 2 toggles the acquirer on and off.
-    if (joy2Btn(2) && lastAcquirerActive == 0) {
+    if (joy2Btn(1) && lastAcquirerActive == 0) {
       acquirerActive = !acquirerActive;
       if (acquirerActive) {
         motor[acquirer] = -50;
