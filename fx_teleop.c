@@ -118,6 +118,7 @@ task main() {
     nxtDisplayString(3, "Y2: %i", y2);
     nxtDisplayString(4, "X1: %i", x1);
     nxtDisplayString(5, "Y1: %i", y1);
+
     if (controlDriveMode) {
     	nxtDisplayString(6, "controlled mode");
     } else {
@@ -143,7 +144,7 @@ task main() {
     lastAcquirerActive = joy2Btn(1);
 
     // Joystick 2 button 3 will release the balls from the lifted box.
-    if (joy2Btn(3)) {
+    if (joy1Btn(3) || joy2Btn(3)) {
       servo[liftBox] = 90;
     } else {
       servo[liftBox] = 225;
@@ -152,11 +153,21 @@ task main() {
     // Joystick 2 buttons 5 and 6 raise the lift mechanism.
     // Joystick 2 buttons 7 and 8 lower the lift mechanism.
     if (joy2Btn(5) || joy2Btn(6)) {
-      motor[lift1] = 100;
-      motor[lift2] = 100;
+    	if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
+    		motor[lift1] = 75;
+    		motor[lift2] = 100;
+    	} else {
+    		motor[lift1] = 100;
+    		motor[lift2] = 75;
+    	}
     } else if (joy2Btn(7) || joy2Btn(8)) {
-      motor[lift1] = -100;
-      motor[lift2] = -100;
+    	if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
+    		motor[lift1] = -100;
+    		motor[lift2] = -75;
+    	} else {
+    		motor[lift1] = -75;
+    		motor[lift2] = -100;
+    	}
     } else {
       motor[lift1] = 0;
       motor[lift2] = 0;
