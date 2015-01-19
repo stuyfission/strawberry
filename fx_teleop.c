@@ -134,7 +134,7 @@ task main() {
     /* JOYSTICK 2 - OPERATOR MECHANISMS */
 
     // Joystick 2 button 2 toggles the acquirer on and off.
-    if (joy2Btn(1) && lastAcquirerActive == 0) {
+    if (joy2Btn(2) && lastAcquirerActive == 0) {
       acquirerActive = !acquirerActive;
       if (acquirerActive) {
         motor[acquirer] = -50;
@@ -142,13 +142,13 @@ task main() {
         motor[acquirer] = 0;
       }
     }
-    lastAcquirerActive = joy2Btn(1);
+    lastAcquirerActive = joy2Btn(2);
 
     // Joystick 2 button 3 will release the balls from the lifted box.
     if (joy1Btn(3) || joy2Btn(3)) {
-      servo[liftBox] = 90;
+      servo[liftBox] = 200;
     } else {
-      servo[liftBox] = 225;
+      servo[liftBox] = 0;
     }
 
     // Joystick 2 buttons 5 and 6 raise the lift mechanism.
