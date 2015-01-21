@@ -53,10 +53,6 @@ void clearEncoders() {
   nMotorEncoder[lift2] = 0;
 }
 
-void stopMotors() {
-  driveMotors(0, 0);
-}
-
 int averageMotors(tMotor frontMotor, tMotor backMotor) {
   return (nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2;
 }
@@ -71,6 +67,12 @@ void driveMotors(int leftSpeed, int rightSpeed) {
   motor[driveBL] = -leftSpeed;
   motor[driveFR] = rightSpeed;
   motor[driveBR] = rightSpeed;
+}
+
+void stopMotors() {
+  driveMotors(0, 0);
+  motor[lift1] = 0;
+  motor[lift2] = 0;
 }
 
 /**
@@ -154,6 +156,11 @@ task main() {
 	//waitForStart();
   StartTask(outputEncoderValues);
 
-  activateLift(-100, 500);
+	servo[liftBox] = 0;
+  servo[liftBox] = 150;
+  wait1Msec(1000);
+  servo[liftBox] = 0;
+  wait1Msec(1000);
+
   //auton1();
 }

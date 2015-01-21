@@ -146,7 +146,7 @@ task main() {
 
     // Joystick 2 button 3 will release the balls from the lifted box.
     if (joy1Btn(3) || joy2Btn(3)) {
-      servo[liftBox] = 200;
+      servo[liftBox] = 150;
     } else {
       servo[liftBox] = 0;
     }

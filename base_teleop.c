@@ -41,8 +41,6 @@ task main() {
   // last* variables are for toggle states
   bool controlDriveMode = false;
   int lastControlDriveMode = 0;
-  bool reverseDriveMode = true;
-  int lastReverseDriveMode = 0;
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
 
@@ -63,54 +61,26 @@ task main() {
       y2 = 0;
     }
 
-    // Joystick button 1 toggles the drive mode between reverse and regular.
-    if (joy1Btn(1) && lastReverseDriveMode == 0) {
-    	reverseDriveMode = !reverseDriveMode;
-    }
-    lastReverseDriveMode = joy1Btn(1);
-
-    // Joystick button 2 toggles the drive mode between slow and fast.
-    if (joy1Btn(2) && lastControlDriveMode == 0) {
+    // Joystick button 1 toggles the drive mode between slow and fast.
+    if (joy1Btn(1) && lastControlDriveMode == 0) {
       controlDriveMode = !controlDriveMode;
     }
-    lastControlDriveMode = joy1Btn(2);
+    lastControlDriveMode = joy1Btn(1);
 
+    // Joystick values are assigned to the motors.
     if (controlDriveMode) {
-    	if (reverseDriveMode) {
-	      motor[driveFL] = controlModeSpeed * (y1 / abs(y1));
-	      motor[driveBL] = controlModeSpeed * (y1 / abs(y1));
-	      motor[driveFR] = controlModeSpeed * -(y2 / abs(y2));
-	      motor[driveBR] = controlModeSpeed * -(y2 / abs(y2));
-	    } else {
-	      motor[driveFL] = controlModeSpeed * -(y2 / abs(y2));
-	      motor[driveBL] = controlModeSpeed * -(y2 / abs(y2));
-	      motor[driveFR] = controlModeSpeed * (y1 / abs(y1));
-	      motor[driveBR] = controlModeSpeed * (y1 / abs(y1));
-	    }
+      motor[driveFL] = controlModeSpeed * -(y2 / abs(y2));
+      motor[driveBL] = controlModeSpeed * -(y2 / abs(y2));
+      motor[driveFR] = controlModeSpeed * (y1 / abs(y1));
+      motor[driveBR] = controlModeSpeed * (y1 / abs(y1));
     } else {
-    	if (reverseDriveMode) {
-	      motor[driveFL] = y1;
-	      motor[driveBL] = y1;
-	      motor[driveFR] = -y2;
-	      motor[driveBR] = -y2;
-	    } else {
-	      motor[driveFL] = -y2;
-	      motor[driveBL] = -y2;
-	      motor[driveFR] = y1;
-	      motor[driveBR] = y1;
-	    }
+      motor[driveFL] = y1;
+      motor[driveBL] = y1;
+      motor[driveFR] = -y2;
+	    motor[driveBR] = -y2;
     }
 
-    // Joystick buttons 5 and 7 clamp the rolling goal.
-    // Joystick buttons 6 and 8 release the rolling goal clamp.
-    if (joy1Btn(7)) {
-      servo[goalClamp] = 0;
-    }
-    if (joy1Btn(5)) {
-      servo[goalClamp] = 200;
-    }
-
-    // Outputs Joystick 1 states to the screen.
+    // Outputs Joystick 1 and drive state mode to the screen.
     eraseDisplay();
     nxtDisplayString(2, "X2: %i", x2);
     nxtDisplayString(3, "Y2: %i", y2);
@@ -121,14 +91,9 @@ task main() {
     } else {
     	nxtDisplayString(6, "fast mode");
     }
-    if (reverseDriveMode) {
-    	nxtDisplayString(7, "reverseMode");
-    } else {
-    	nxtDisplayString(7, "normalDrive");
-    }
 
     // Joystick button 2 toggles the acquirer on and off.
-    if (joy1Btn(3) && lastAcquirerActive == 0) {
+    if (joy1Btn(2) && lastAcquirerActive == 0) {
       acquirerActive = !acquirerActive;
       if (acquirerActive) {
         motor[acquirer] = -50;
@@ -136,16 +101,23 @@ task main() {
         motor[acquirer] = 0;
       }
     }
-    lastAcquirerActive = joy2Btn(1);
+    lastAcquirerActive = joy1Btn(2);
 
     // Joystick button 3 will release the balls from the lifted box.
-    if (joy1Btn(4)) {
-      servo[liftBox] = 225;
+    if (joy1Btn(3)) {
+      servo[liftBox] = 150;
     } else {
       servo[liftBox] = 0;
     }
 
-    // Joystick buttons 5 and 6 raise the lift mechanism.
+    // Joystick buttons 5 and 7 clamp and release the rolling goal.
+    if (joy1Btn(7)) {
+      servo[goalClamp] = 200;
+    }
+    if (joy1Btn(5)) {
+      servo[goalClamp] = 0;
+    }
+
     // Joystick buttons 7 and 8 lower the lift mechanism.
     if (joy1Btn(6)) {
       motor[lift1] = 100;
