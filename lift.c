@@ -26,21 +26,21 @@
 task main() {
   while (true) {
     if (nNxtButtonPressed == 1) {
-    	if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
-    		motor[lift1] = 75;
-    		motor[lift2] = 100;
-    	} else {
-    		motor[lift1] = 100;
-    		motor[lift2] = 75;
-    	}
+      if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
+        motor[lift1] = 75;
+        motor[lift2] = 100;
+      } else {
+        motor[lift1] = 100;
+        motor[lift2] = 75;
+      }
     } else if (nNxtButtonPressed == 2) {
-    	if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
-    		motor[lift1] = -100;
-    		motor[lift2] = -75;
-    	} else {
-    		motor[lift1] = -75;
-    		motor[lift2] = -100;
-    	}
+      if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
+        motor[lift1] = -100;
+        motor[lift2] = -75;
+      } else {
+        motor[lift1] = -75;
+        motor[lift2] = -100;
+      }
     } else {
       motor[lift1] = 0;
       motor[lift2] = 0;
