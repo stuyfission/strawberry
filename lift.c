@@ -46,10 +46,10 @@ task main() {
         motor[lift1] = -75;
         motor[lift2] = -100;
       }
-    } else if (nNxtButtonPressed == 0) {
+    } else if (nNxtButtonPressed == 3) {
     	nxtDisplayString(4, "Tensioning lift");
-    	motor[lift1] = 5;
-    	motor[lift2] = 5;
+    	motor[lift1] = 10;
+    	motor[lift2] = 10;
   	} else {
     	nxtDisplayString(4, "Left to lower");
     	nxtDisplayString(5, "Right to raise");

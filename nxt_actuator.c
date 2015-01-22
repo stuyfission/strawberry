@@ -79,7 +79,10 @@ task main() {
 
   	// Switching actuation modes
   	if (nNxtButtonPressed == 2 && !leftPressed) {
-  		mode = (mode - 1) % NUM_MODES;
+  		mode--;
+  		if (mode < 0) {
+  			mode += NUM_MODES;
+  		}
   	}
   	leftPressed = nNxtButtonPressed == 2;
 
@@ -88,14 +91,14 @@ task main() {
   	}
   	rightPressed = nNxtButtonPressed == 1;
 
-  	centerPressed = nNxtButtonPressed == 0;
+  	centerPressed = nNxtButtonPressed == 3;
 
     eraseDisplay();
-    nxtDisplayString(2, "Press center to actuate");
 
+    // Responses for each mode.
     switch (mode) {
     	case DRIVE_STRAIGHT_FD_MODE:
-    		nxtDisplayString(1, "%i: Straight Forward", mode);
+    		nxtDisplayString(1, "%i: Straight FD", mode);
     		if (centerPressed) {
     			if (averageMotors(driveFL, driveBL) > averageMotors(driveFR, driveBR)) {
     				driveMotors(75, 100);
@@ -107,7 +110,7 @@ task main() {
     		}
     		break;
     	case DRIVE_STRAIGHT_BK_MODE:
-    		nxtDisplayString(1, "%i: Straight Backward", mode);
+    		nxtDisplayString(1, "%i: Straight BK", mode);
     		if (centerPressed) {
     			if (averageMotors(driveFL, driveBL) > averageMotors(driveFR, driveBR)) {
     				driveMotors(-75, -100);
@@ -188,12 +191,16 @@ task main() {
     	case LIFT_BOX_MODE:
     		nxtDisplayString(1, "%i: Lift Box", mode);
     		if (centerPressed) {
-    			servo[goalClamp] = 150;
+    			servo[liftBox] = 150;
     		} else {
-    			servo[goalClamp] = 0;
+    			servo[liftBox] = 0;
     		}
     		break;
     }
+
+    nxtDisplayString(2, "Press center");
+    nxtDisplayString(3, "to actuate");
+
     wait1Msec(10);
   }
 }
