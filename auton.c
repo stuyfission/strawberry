@@ -55,7 +55,7 @@ int toTicks (float inches) {
  * @return The average of the encoder values of the two specified motors.
  */
 int averageMotors(tMotor frontMotor, tMotor backMotor) {
-  return (nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2;
+  return abs((nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2);
 }
 
 /**
@@ -94,7 +94,10 @@ void driveMotors(int leftSpeed, int rightSpeed) {
  * Stops all the motors on the robot.
  */
 void stopMotors() {
-  driveMotors(0, 0);
+  motor[driveFL] = 0;
+  motor[driveBL] = 0;
+  motor[driveFR] = 0;
+  motor[driveBR] = 0;
   motor[lift1] = 0;
   motor[lift2] = 0;
 }
@@ -134,8 +137,8 @@ void driveStraight(int speed, int encoderTicks) {
  */
 void activateLift(int power, int encoderTicks) {
   clearEncoders();
-  while (nMotorEncoder[lift1] < abs(encoderTicks) &&
-         nMotorEncoder[lift2] < abs(encoderTicks)) {
+  while (abs(nMotorEncoder[lift1]) < abs(encoderTicks) &&
+         abs(nMotorEncoder[lift2]) < abs(encoderTicks)) {
     motor[lift1] = power;
     motor[lift2] = power;
   }
@@ -149,7 +152,8 @@ void activateLift(int power, int encoderTicks) {
 void auton0() {
   clearEncoders();
   initializeServos();
-  driveStraight(-50, 750);
+
+  driveStraight(-30, 750);
   driveStraight(-100, 5500);
   wait1Msec(1000);
 }
@@ -161,10 +165,10 @@ void auton1() {
   clearEncoders();
   initializeServos();
 
-  driveStraight(-50, 750);
-  driveStraight(-100, 5500);
-  driveMotors(-100, 100, 2900);
-  driveStraight(2500, 100);
+  driveStraight(-40, 750);
+  driveStraight(-100, 5000);
+  driveMotors(-100, 100, 3050);
+  driveStraight(100, 3500);
 
   motor[acquirer] = -50;
   wait1Msec(2000);
@@ -173,9 +177,16 @@ void auton1() {
   activateLift(100, 2500);
 
   servo[liftBox] = 150;
+  servo[goalClamp] = 200;
   wait1Msec(1000);
   servo[liftBox] = 0;
   wait1Msec(1000);
+
+  activateLift(-30, 2500);
+
+	driveMotors(100, 0, 4300);
+	driveStraight(-100, 5000);
+	wait1Msec(1000);
 }
 
 /**
@@ -184,6 +195,9 @@ void auton1() {
 void auton2() {
   clearEncoders();
   initializeServos();
+
+  driveStraight(-30, 750);
+  driveStraight(-100, 5000);
 }
 
 task main() {
