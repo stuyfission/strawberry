@@ -19,7 +19,7 @@
 // Copyright Stuy Fission 310
 /**
  * @author Alvin Lin (alvin.lin@stuypulse.com)
- * Creates a menu in which actions can be controlled by the
+ * Creates a menu in which robot actions can be controlled by the
  * NXT buttons for the purpose of debugging.
  */
 

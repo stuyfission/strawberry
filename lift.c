@@ -22,6 +22,9 @@
  * Contributor: Alvin Lin (alvin.lin@stuypulse.com)
  * This code forms a utility program that allows us to actuate
  * the lift.
+ * The left NXT button will lower the lift while the right one
+ * will raise it. The center NXT button will apply tension to the
+ * pulley strings.
  */
 
 task main() {
