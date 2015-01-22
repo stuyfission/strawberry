@@ -18,14 +18,17 @@
 
 // Copyright Stuy Fission 310
 /**
- * Authored by Kenneth Li (kenneth.li@stuypulse.com)
+ * @author Kenneth Li (kenneth.li@stuypulse.com)
  * This code runs the lift upwards when the left button is pressed
  * and downwards when the right button is pressed.
  */
 
 task main() {
   while (true) {
+    eraseDisplay();
+    nxtDisplayString(3, "Button: %i", nNxtButtonPressed);
     if (nNxtButtonPressed == 1) {
+    	nxtDisplayString(4, "Raising lift");
       if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
         motor[lift1] = 75;
         motor[lift2] = 100;
@@ -34,6 +37,7 @@ task main() {
         motor[lift2] = 75;
       }
     } else if (nNxtButtonPressed == 2) {
+    	nxtDisplayString(4, "Lowering lift");
       if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
         motor[lift1] = -100;
         motor[lift2] = -75;
@@ -42,8 +46,11 @@ task main() {
         motor[lift2] = -100;
       }
     } else {
+    	nxtDisplayString(4, "Left to lower");
+    	nxtDisplayString(5, "Right to raise");
       motor[lift1] = 0;
       motor[lift2] = 0;
     }
+    wait1Msec(10);
   }
 }

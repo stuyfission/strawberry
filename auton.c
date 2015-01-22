@@ -184,10 +184,13 @@ void auton1() {
 void auton2() {
   clearEncoders();
   initializeServos();
+
+  driveStraight(-50, 750);
+  driveStraight(-100, 5500);
 }
 
 task main() {
   //waitForStart();
   StartTask(outputEncoderValues);
-  auton();
+  auton0();
 }
