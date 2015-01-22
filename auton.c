@@ -164,10 +164,10 @@ void auton1() {
   driveStraight(-50, 750);
   driveStraight(-100, 5500);
   driveMotors(-100, 100, 2900);
-  driveStraight(1500, 100);
+  driveStraight(2500, 100);
 
   motor[acquirer] = -50;
-  wait1Msec(1500);
+  wait1Msec(2000);
   motor[acquirer] = 0;
 
   activateLift(100, 2500);
@@ -184,13 +184,10 @@ void auton1() {
 void auton2() {
   clearEncoders();
   initializeServos();
-
-  driveStraight(-50, 750);
-  driveStraight(-100, 5500);
 }
 
 task main() {
   //waitForStart();
   StartTask(outputEncoderValues);
-  auton0();
+  auton1();
 }

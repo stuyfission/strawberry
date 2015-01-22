@@ -19,8 +19,9 @@
 // Copyright Stuy Fission 310
 /**
  * @author Kenneth Li (kenneth.li@stuypulse.com)
- * This code runs the lift upwards when the left button is pressed
- * and downwards when the right button is pressed.
+ * Contributor: Alvin Lin (alvin.lin@stuypulse.com)
+ * This code forms a utility program that allows us to actuate
+ * the lift.
  */
 
 task main() {
@@ -45,9 +46,14 @@ task main() {
         motor[lift1] = -75;
         motor[lift2] = -100;
       }
-    } else {
+    } else if (nNxtButtonPressed == 0) {
+    	nxtDisplayString(4, "Tensioning lift");
+    	motor[lift1] = 5;
+    	motor[lift2] = 5;
+  	} else {
     	nxtDisplayString(4, "Left to lower");
     	nxtDisplayString(5, "Right to raise");
+    	nxtDisplayString(6, "Middle to tension");
       motor[lift1] = 0;
       motor[lift2] = 0;
     }
