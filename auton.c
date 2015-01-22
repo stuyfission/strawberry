@@ -26,6 +26,9 @@
  * Auton for f(x) bot.
  */
 
+/**
+ * Task that runs synchronously to the main task.
+ */
 task outputEncoderValues() {
   while (true) {
     eraseDisplay();
@@ -38,12 +41,26 @@ task outputEncoderValues() {
 }
 
 /**
- * @param inches The number of inches to move forward
+ * @param inches The number of inches to move forward.
+ * @return The number of ticks to move in order to move forward
+ *   the specified number of inches.
  */
 int toTicks (float inches) {
-	return (int) (inches / (4 * PI)) * TICKS_PER_ROTATION;
+  return (int) (inches / (4 * PI)) * TICKS_PER_ROTATION;
 }
 
+/**
+ * @param tMotor The name of the front motor on a side.
+ * @param tMotor The name of the back motor on the same side.
+ * @return The average of the encoder values of the two specified motors.
+ */
+int averageMotors(tMotor frontMotor, tMotor backMotor) {
+  return (nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2;
+}
+
+/**
+ * Sets all the motor encoders back to zero.
+ */
 void clearEncoders() {
   nMotorEncoder[driveFL] = 0;
   nMotorEncoder[driveBL] = 0;
@@ -53,8 +70,12 @@ void clearEncoders() {
   nMotorEncoder[lift2] = 0;
 }
 
-int averageMotors(tMotor frontMotor, tMotor backMotor) {
-  return (nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2;
+/**
+ * Sets the servos to their initial positions.
+ */
+void initializeServos() {
+  servo[goalClamp] = 0; // initializes servos
+  servo[liftBox] = 0;	// initializes servos
 }
 
 /**
@@ -69,6 +90,9 @@ void driveMotors(int leftSpeed, int rightSpeed) {
   motor[driveBR] = rightSpeed;
 }
 
+/**
+ * Stops all the motors on the robot.
+ */
 void stopMotors() {
   driveMotors(0, 0);
   motor[lift1] = 0;
@@ -91,76 +115,79 @@ void driveMotors(int leftSpeed, int rightSpeed, int encoderTicks) {
   clearEncoders();
 }
 
-void driveStraight(int encoderTicks, int speed) {
+/**
+ * Sets the drivetrain to move straight at a certain speed for a certain
+ * distance.
+ * @param speed The speed to the the drivetrain at.
+ * @param encoderTicks The distance in ticks to run the drivetrain for.
+ */
+void driveStraight(int speed, int encoderTicks) {
   clearEncoders();
   driveMotors(speed, speed, encoderTicks);
-  stopMotors();
   clearEncoders();
 }
 
+/**
+ * Raises or lowers the lift for a certain distance.
+ * @param power The speed and direction to power the lift at.
+ * @param encoderTicks The distance to run the lift for.
+ */
 void activateLift(int power, int encoderTicks) {
-	clearEncoders();
-	while (nMotorEncoder[lift1] < abs(encoderTicks) &&
-				 nMotorEncoder[lift2] < abs(encoderTicks)) {
-		motor[lift1] = power;
+  clearEncoders();
+  while (nMotorEncoder[lift1] < abs(encoderTicks) &&
+         nMotorEncoder[lift2] < abs(encoderTicks)) {
+    motor[lift1] = power;
     motor[lift2] = power;
   }
   stopMotors();
   clearEncoders();
 }
 
-// drives down ramp
+/**
+ * Autonomous code that drives down the ramp only.
+ */
 void auton0() {
-	clearEncoders();
-  driveStraight(750, -50);
-  driveStraight(5500, -100);
+  clearEncoders();
+  initializeServos();
+  driveStraight(-50, 750);
+  driveStraight(-100, 5500);
   wait1Msec(1000);
 }
 
-// drives down ramp, scores in medium goal
+/**
+ * Autonomous code that scores in the medium goal.
+ */
 void auton1() {
-	servo[goalClamp] = 0;//initializes servos
-	servo[liftBox] = 225;	//intiialize servos
   clearEncoders();
-  driveStraight(750, -50);
-  driveStraight(5500, -100);
+  initializeServos();
+
+  driveStraight(-50, 750);
+  driveStraight(-100, 5500);
   driveMotors(-100, 100, 2900);
   driveStraight(1500, 100);
+
   motor[acquirer] = -50;
   wait1Msec(1500);
   motor[acquirer] = 0;
-  activateLift(100, 500);
-  servo[liftBox] = 90;
-  wait1Msec(1000);
-}
 
-// drives down center, blocks opposing center goal
-void auton2() {
-  clearEncoders();
-  driveStraight(750, -50);
-  driveStraight(5500, -100);
-  driveMotors(-100, 100, 1500);
-  driveStraight(3000, -100);
-  wait1Msec(1000);
-}
+  activateLift(100, 2500);
 
-// drives straight as well?? blocks rolling
-void auton3() {
-  driveStraight(500, 50);
-  driveStraight(14400, 100);
-  driveStraight(500, 50);
-  wait1Msec(120000);
-}
-
-task main() {
-	//waitForStart();
-  StartTask(outputEncoderValues);
-
-	servo[liftBox] = 0;
   servo[liftBox] = 150;
   wait1Msec(1000);
   servo[liftBox] = 0;
   wait1Msec(1000);
+}
 
-  //auton1();
+/**
+ * Defensive autonomous code that blocks the opposing center goal.
+ */
+void auton2() {
+  clearEncoders();
+  initializeServos();
+}
+
+task main() {
+  //waitForStart();
+  StartTask(outputEncoderValues);
+  auton();
 }
