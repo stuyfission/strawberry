@@ -76,8 +76,8 @@ task main() {
 	clearEncoders();
 
   while (true) {
-
-  	// Switching actuation modes
+  	// Switching actuation modes.
+  	// Creates a menu to choose from.
   	if (nNxtButtonPressed == 2 && !leftPressed) {
   		mode--;
   		if (mode < 0) {
@@ -198,9 +198,11 @@ task main() {
     		break;
     }
 
+    // Outputs default text.
     nxtDisplayString(2, "Press center");
     nxtDisplayString(3, "to actuate");
 
+    // 10 millisecond buffer.
     wait1Msec(10);
   }
 }
