@@ -3,6 +3,11 @@
 
 #include "RobotC/drivers/HTSPB-driver.h"
 
+/**
+ * @author Alvin Lin (alvin.lin@stuypulse.com)
+ * This file is a test for the HiTechnic SuperPro Board.
+ */
+
 task main() {
   
   // Set B0 as an output port

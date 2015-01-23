@@ -41,7 +41,7 @@ void clearEncoders() {
  * @return The average of the encoder values of the two specified motors.
  */
 int averageMotors(tMotor frontMotor, tMotor backMotor) {
-  return abs((nMotorEncoder[frontMotor] +	nMotorEncoder[backMotor]) / 2);
+  return abs((nMotorEncoder[frontMotor] + nMotorEncoder[backMotor]) / 2);
 }
 
 /**
@@ -68,134 +68,134 @@ const int LIFT_BOX_MODE = 8;
 const int NUM_MODES = 9;
 
 task main() {
-	int mode = 0;
-	bool leftPressed = false;
-	bool rightPressed = false;
-	bool centerPressed = false;
+  int mode = 0;
+  bool leftPressed = false;
+  bool rightPressed = false;
+  bool centerPressed = false;
 
-	clearEncoders();
+  clearEncoders();
 
   while (true) {
-  	// Switching actuation modes.
-  	// Creates a menu to choose from.
-  	if (nNxtButtonPressed == 2 && !leftPressed) {
-  		mode--;
-  		if (mode < 0) {
-  			mode += NUM_MODES;
-  		}
-  	}
-  	leftPressed = nNxtButtonPressed == 2;
+    // Switching actuation modes.
+    // Creates a menu to choose from.
+    if (nNxtButtonPressed == 2 && !leftPressed) {
+      mode--;
+      if (mode < 0) {
+        mode += NUM_MODES;
+      }
+    }
+    leftPressed = nNxtButtonPressed == 2;
 
-  	if (nNxtButtonPressed == 1 && !rightPressed) {
-  		mode = (mode + 1) % NUM_MODES;
-  	}
-  	rightPressed = nNxtButtonPressed == 1;
+    if (nNxtButtonPressed == 1 && !rightPressed) {
+      mode = (mode + 1) % NUM_MODES;
+    }
+    rightPressed = nNxtButtonPressed == 1;
 
-  	centerPressed = nNxtButtonPressed == 3;
+    centerPressed = nNxtButtonPressed == 3;
 
     eraseDisplay();
 
     // Responses for each mode.
     switch (mode) {
-    	case DRIVE_STRAIGHT_FD_MODE:
-    		nxtDisplayString(1, "%i: Straight FD", mode);
-    		if (centerPressed) {
-    			if (averageMotors(driveFL, driveBL) > averageMotors(driveFR, driveBR)) {
-    				driveMotors(75, 100);
-    			} else {
-    				driveMotors(100, 75);
-    			}
-    		} else {
-    			driveMotors(0, 0);
-    		}
-    		break;
-    	case DRIVE_STRAIGHT_BK_MODE:
-    		nxtDisplayString(1, "%i: Straight BK", mode);
-    		if (centerPressed) {
-    			if (averageMotors(driveFL, driveBL) > averageMotors(driveFR, driveBR)) {
-    				driveMotors(-75, -100);
-    			} else {
-    				driveMotors(-100, -75);
-    			}
-    		} else {
-    			driveMotors(0, 0);
-    		}
+    case DRIVE_STRAIGHT_FD_MODE:
+      nxtDisplayString(1, "%i: Straight FD", mode);
+      if (centerPressed) {
+        if (averageMotors(driveFL, driveBL) > averageMotors(driveFR, driveBR)) {
+          driveMotors(75, 100);
+        } else {
+          driveMotors(100, 75);
+        }
+      } else {
+        driveMotors(0, 0);
+      }
+      break;
+    case DRIVE_STRAIGHT_BK_MODE:
+      nxtDisplayString(1, "%i: Straight BK", mode);
+      if (centerPressed) {
+        if (averageMotors(driveFL, driveBL) > averageMotors(driveFR, driveBR)) {
+          driveMotors(-75, -100);
+        } else {
+          driveMotors(-100, -75);
+        }
+      } else {
+        driveMotors(0, 0);
+      }
 
-    		break;
-    	case DRIVE_L_MODE:
-    		nxtDisplayString(1, "%i: Left Drive", mode);
-    		if (centerPressed) {
-    			motor[driveFL] = 100;
-    			motor[driveBL] = 100;
-    		} else {
-    			motor[driveFL] = 0;
-    			motor[driveBL] = 0;
-    		}
-    		break;
-    	case DRIVE_R_MODE:
-    		nxtDisplayString(1, "%i: Right Drive", mode);
-    		if (centerPressed) {
-    			motor[driveFR] = -100;
-    			motor[driveBR] = -100;
-    		} else {
-    			motor[driveFR] = 0;
-    			motor[driveBR] = 0;
-    		}
-    		break;
-    	case LIFT_UP_MODE:
-    		nxtDisplayString(1, "%i: Lift Up", mode);
-    		if (centerPressed) {
-		      if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
-		        motor[lift1] = 75;
-		        motor[lift2] = 100;
-		      } else {
-		        motor[lift1] = 100;
-		        motor[lift2] = 75;
-		      }
-    		} else {
-    			motor[lift1] = 0;
-    			motor[lift2] = 0;
-    		}
-    		break;
-    	case LIFT_DOWN_MODE:
-    		nxtDisplayString(1, "%i: Lift Down", mode);
-    		if (centerPressed) {
-		      if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
-		        motor[lift1] = -100;
-		        motor[lift2] = -75;
-		      } else {
-		        motor[lift1] = -75;
-		        motor[lift2] = -100;
-		      }
-    		} else {
-    			motor[lift1] = 0;
-    			motor[lift2] = 0;
-    		}
-    		break;
-    	case ACQUIRER_MODE:
-    		nxtDisplayString(1, "%i: Acquirer", mode);
-    		if (centerPressed) {
-    			motor[acquirer] = -50;
-    		} else {
-    			motor[acquirer] = 0;
-    		}
-    		break;
-    	case GOAL_CLAMP_MODE:
-    		nxtDisplayString(1, "%i: Goal Clamp", mode);
-    		if (centerPressed) {
-    			servo[goalClamp] = 0;
-    		} else {
-    			servo[goalClamp] = 200;
-    		}
-    		break;
-    	case LIFT_BOX_MODE:
-    		nxtDisplayString(1, "%i: Lift Box", mode);
-    		if (centerPressed) {
-    			servo[liftBox] = 150;
-    		} else {
-    			servo[liftBox] = 0;
-    		}
-    		break;
+      break;
+    case DRIVE_L_MODE:
+      nxtDisplayString(1, "%i: Left Drive", mode);
+      if (centerPressed) {
+        motor[driveFL] = 100;
+        motor[driveBL] = 100;
+      } else {
+        motor[driveFL] = 0;
+        motor[driveBL] = 0;
+      }
+      break;
+    case DRIVE_R_MODE:
+      nxtDisplayString(1, "%i: Right Drive", mode);
+      if (centerPressed) {
+        motor[driveFR] = -100;
+        motor[driveBR] = -100;
+      } else {
+        motor[driveFR] = 0;
+        motor[driveBR] = 0;
+      }
+      break;
+    case LIFT_UP_MODE:
+      nxtDisplayString(1, "%i: Lift Up", mode);
+      if (centerPressed) {
+        if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
+          motor[lift1] = 75;
+          motor[lift2] = 100;
+        } else {
+          motor[lift1] = 100;
+          motor[lift2] = 75;
+        }
+      } else {
+        motor[lift1] = 0;
+        motor[lift2] = 0;
+      }
+      break;
+    case LIFT_DOWN_MODE:
+      nxtDisplayString(1, "%i: Lift Down", mode);
+      if (centerPressed) {
+        if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
+          motor[lift1] = -100;
+          motor[lift2] = -75;
+        } else {
+          motor[lift1] = -75;
+          motor[lift2] = -100;
+        }
+      } else {
+        motor[lift1] = 0;
+        motor[lift2] = 0;
+      }
+      break;
+    case ACQUIRER_MODE:
+      nxtDisplayString(1, "%i: Acquirer", mode);
+      if (centerPressed) {
+        motor[acquirer] = -50;
+      } else {
+        motor[acquirer] = 0;
+      }
+      break;
+    case GOAL_CLAMP_MODE:
+      nxtDisplayString(1, "%i: Goal Clamp", mode);
+      if (centerPressed) {
+        servo[goalClamp] = 0;
+      } else {
+        servo[goalClamp] = 200;
+      }
+      break;
+    case LIFT_BOX_MODE:
+      nxtDisplayString(1, "%i: Lift Box", mode);
+      if (centerPressed) {
+        servo[liftBox] = 150;
+      } else {
+        servo[liftBox] = 0;
+      }
+      break;
     }
 
     // Outputs default text.

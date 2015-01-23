@@ -23,12 +23,8 @@
  * Authored by Alvin Lin (alvin.lin@stuypulse.com)
  * http://omgimanerd.github.io
  * http://310fission.com
- * This file is the teleop program that f(x) bot will run.
- * Teleop will be split into driver-operator control.
- * The driver will control the drivetrain, drive mode, and the
- * rolling goal clamp.
- * The operator will control the acquirer, lift, and lift box release,
- * as well as any miscellaneous lights.
+ * This file is the single person joystick teleop program for f(x) bot. All
+ * parts of the robot can be controlled with one joystick in this program.
  */
 
 // Control constants.
@@ -36,14 +32,22 @@ const int controlModeSpeed = 20;
 const int joystickThreshold = 25;
 
 task main() {
-	// x1, y1, x2, and y2 store the joystick values for the driver.
+  // x1, y1, x2, and y2 store the joystick values for the driver.
   int x1, y1, x2, y2;
+  // liftDownLimiter stores whether or not the limiter is active on the lift
+  // mechanism.
+  bool liftDownLimiter;
+
   // last* variables are for toggle states
   bool controlDriveMode = false;
   int lastControlDriveMode = 0;
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
 
+  nMotorEncoder[lift1] = 0;
+  nMotorEncoder[lift2] = 0;
+
+  waitForStart();
   while (true) {
     // Update the values of the variables storing the joystick positions.
     getJoystickSettings(joystick);
@@ -110,6 +114,12 @@ task main() {
       servo[liftBox] = 0;
     }
 
+    // Joystick button 4 will allow the manual override of the lift
+    // lowering limiter.
+    if (joy1Btn(4)) {
+      liftDownLimiter = false;
+    }
+
     // Joystick buttons 5 and 7 clamp and release the rolling goal.
     if (joy1Btn(6)) {
       servo[goalClamp] = 0;
@@ -120,11 +130,28 @@ task main() {
 
     // Joystick buttons 7 and 8 lower the lift mechanism.
     if (joy1Btn(5)) {
-      motor[lift1] = 100;
-      motor[lift2] = 100;
+      if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
+        motor[lift1] = 75;
+        motor[lift2] = 100;
+      } else {
+        motor[lift1] = 100;
+        motor[lift2] = 75;
+      }
     } else if (joy1Btn(7)) {
-      motor[lift1] = -100;
-      motor[lift2] = -100;
+      if (liftDownLimiter &&
+          nMotorEncoder[lift1] <= 0 &&
+          nMotorEncoder[lift2] <= 0) {
+        motor[lift1] = 0;
+        motor[lift2] = 0;
+      } else {
+        if (nMotorEncoder[lift1] > nMotorEncoder[lift2]) {
+          motor[lift1] = -100;
+          motor[lift2] = -75;
+        } else {
+          motor[lift1] = -75;
+          motor[lift2] = -100;
+        }
+      }
     } else {
       motor[lift1] = 0;
       motor[lift2] = 0;
