@@ -23,7 +23,8 @@
 // Copyright Stuy Fission 310
 /**
  * @author Alvin Lin (alvin.lin@stuypulse.com)
- * Auton for f(x) bot.
+ * Autonomous code for f(x) bot. Split into three autonomous programs that can
+ * be selected at will.
  */
 
 /**
