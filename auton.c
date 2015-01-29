@@ -181,6 +181,7 @@ void locateGoal() {
 	while (SensorValue[sonar] > 40) {
 		driveMotors(25, -25);
 	}
+	driveMotors(25, -25, 250);
 	stopMotors();
 }
 
@@ -194,7 +195,7 @@ void auton0() {
   initializeServos();
 
   driveStraightGyro(-40, 2000);
-  driveStraightEncoders(-100, 4250);
+  driveStraightEncoders(-100, 4200);
   wait1Msec(1000);
 }
 
@@ -206,10 +207,12 @@ void auton1() {
   initializeServos();
 
   driveStraightGyro(-40, 2000);
-  driveStraightEncoders(-100, 4250);
+  driveStraightEncoders(-100, 4200);
   driveMotors(100, -100, 1800);
   wait1Msec(1000);
+  bFloatDuringInactiveMotorPWM = false;
   locateGoal();
+  bFloatDuringInactiveMotorPWM = true;
   driveStraightGyro(100, 3000);
 
   motor[acquirer] = -50;
@@ -239,8 +242,8 @@ void auton2() {
   clearEncoders();
   initializeServos();
 
-  driveStraightEncoders(-30, 750);
-  driveStraightEncoders(-100, 5000);
+  driveStraightGyro(-40, 2000);
+  driveStraightEncoders(-100, 4200);
 }
 
 task main() {

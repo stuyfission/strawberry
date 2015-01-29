@@ -1,11 +1,16 @@
 // Copyright Stuy Fission 310
 /**
  * @author Alvin Lin (alvin.lin@stuypulse.com)
- * Header file with base functions needed by both auton and teleop.
+ * Header file with base functions needed by both auton and teleop for
+ * f(x) bot.
  */
 
 #define TICKS_PER_ROTATION 1120
 #define WHEEL_DIAMETER 4
+#define MAX_MOTOR_SPEED 100
+#define MIN_MOTOR_SPEED -100
+#define MAX_DEVIATION 30
+#define MIN_DEVIATION -30
 
 /**
  * @param inches The number of inches to move forward.
@@ -38,7 +43,7 @@ int bound (int x, int upperBound, int lowerBound) {
  * @param speed The speed to bound
  */
 int normalizeSpeed (int speed) {
-	return bound(speed, 100, -100);
+	return bound(speed, MAX_MOTOR_SPEED, MIN_MOTOR_SPEED);
 }
 
 /**
@@ -47,7 +52,7 @@ int normalizeSpeed (int speed) {
  * @param deviation The deviation to bound
  */
 int normalizeDeviation (int deviation) {
-	return bound(deviation, 40, -40);
+	return bound(deviation, MAX_DEVIATION, MIN_DEVIATION);
 }
 
 /**
