@@ -5,6 +5,7 @@
  */
 
 #define TICKS_PER_ROTATION 1120
+#define WHEEL_DIAMETER 4
 
 /**
  * @param inches The number of inches to move forward.
@@ -12,7 +13,7 @@
  *   the specified number of inches.
  */
 int toTicks (float inches) {
-  return (int) (inches / (4 * PI)) * TICKS_PER_ROTATION;
+  return (int) (inches / (WHEEL_DIAMETER * PI)) * TICKS_PER_ROTATION;
 }
 
 /**
