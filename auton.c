@@ -32,7 +32,7 @@
 
 #include "fx_header.h"
 
-#define GYRO_NORMAL 605
+#define GYRO_NORMAL 602
 
 /**
  * Task that runs synchronously to the main task.
@@ -66,6 +66,7 @@ void clearEncoders() {
 void initializeServos() {
   servo[goalClamp] = 0; // initializes servos
   servo[liftBox] = 0;	// initializes servos
+  wait1Msec(1000);
 }
 
 /**
@@ -178,10 +179,10 @@ void activateLift(int speed, int encoderTicks) {
 }
 
 void locateGoal() {
-	while (SensorValue[sonar] > 40) {
-		driveMotors(25, -25);
+	while (SensorValue[sonar] > 250) {
+		driveMotors(-40, 40);
 	}
-	driveMotors(25, -25, 250);
+	driveMotors(20, -20, 220);
 	stopMotors();
 }
 
@@ -204,8 +205,8 @@ void auton0() {
   clearEncoders();
   initializeServos();
 
-  driveStraightGyro(-40, 2000);
-  driveStraightEncoders(-100, 4200);
+  driveStraightGyro(-30, 2000);
+  driveStraightEncoders(-100, 4500);
   wait1Msec(1000);
 }
 
@@ -216,18 +217,17 @@ void auton1() {
   clearEncoders();
   initializeServos();
 
-  driveStraightGyro(-40, 2000);
-  driveStraightEncoders(-100, 4200);
-  driveMotors(100, -100, 1800);
+  driveStraightGyro(-30, 2000);
+  driveStraightEncoders(-100, 4900);
+  driveMotors(-100, 100, 2000);
   wait1Msec(1000);
   bFloatDuringInactiveMotorPWM = false;
   locateGoal();
-  bFloatDuringInactiveMotorPWM = true;
-  driveStraightGyro(100, 3000);
+  driveStraightGyro(100, 500);
 
   motor[acquirer] = -50;
-  wait1Msec(2000);
   motor[acquirer] = 0;
+  wait1Msec(2000);
 
   activateLift(100, 2500);
 
@@ -237,8 +237,8 @@ void auton1() {
   servo[liftBox] = 0;
   wait1Msec(1000);
 
-  activateLift(-30, 2500);
-
+  bFloatDuringInactiveMotorPWM = true;
+  activateLift(-50, 2500);
   /*
 	driveMotors(100, 0, 4300);
 	driveStraight(-100, 5000);
@@ -253,7 +253,7 @@ void auton2() {
   initializeServos();
 
   driveStraightGyro(-40, 2000);
-  driveStraightEncoders(-100, 4200);
+  driveStraightEncoders(-100, 4300);
 }
 
 task main() {
@@ -261,4 +261,5 @@ task main() {
   StartTask(outputEncoderValues);
   bFloatDuringInactiveMotorPWM = true;
   auton1();
+  StopAllTasks();
 }

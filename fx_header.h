@@ -7,10 +7,10 @@
 
 #define TICKS_PER_ROTATION 1120
 #define WHEEL_DIAMETER 4
-#define MAX_MOTOR_SPEED 100
 #define MIN_MOTOR_SPEED -100
-#define MAX_DEVIATION 30
-#define MIN_DEVIATION -30
+#define MAX_MOTOR_SPEED 100
+#define MIN_DEVIATION -40
+#define MAX_DEVIATION 40
 
 /**
  * @param inches The number of inches to move forward.
@@ -24,14 +24,14 @@ int toTicks (float inches) {
 /**
  * Bounds a given number within a given set of bounds.
  * @param x The number to bound
- * @param upperBound The uppermost or highest number it can be
  * @param lowerBound The lowest number it can be
+ * @param upperBound The uppermost or highest number it can be
  */
-int bound (int x, int upperBound, int lowerBound) {
-	if (x > upperBound) {
-		return upperBound;
-	} else if (x < lowerBound) {
+int bound (int x, int lowerBound, int upperBound) {
+	if (x <= lowerBound) {
 		return lowerBound;
+	} else if (x >= upperBound) {
+		return upperBound;
 	} else {
 		return x;
 	}
@@ -43,7 +43,7 @@ int bound (int x, int upperBound, int lowerBound) {
  * @param speed The speed to bound
  */
 int normalizeSpeed (int speed) {
-	return bound(speed, MAX_MOTOR_SPEED, MIN_MOTOR_SPEED);
+	return bound(speed, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
 }
 
 /**
@@ -52,7 +52,7 @@ int normalizeSpeed (int speed) {
  * @param deviation The deviation to bound
  */
 int normalizeDeviation (int deviation) {
-	return bound(deviation, MAX_DEVIATION, MIN_DEVIATION);
+	return bound(deviation, MIN_DEVIATION, MAX_DEVIATION);
 }
 
 /**
