@@ -185,6 +185,16 @@ void locateGoal() {
 	stopMotors();
 }
 
+void rampAcceleration(int totalChange, int duration) {
+	for (int i = 0; i < duration; i += 20) {
+		motor[driveBL] = motor[driveBL] + (totalChange / 20);
+		motor[driveBR] = motor[driveBR] + (totalChange / 20);
+		motor[driveFL] = motor[driveFL] + (totalChange / 20);
+		motor[driveFR] = motor[driveFR] + (totalChange / 20);
+		wait1Msec(20);
+	}
+}
+
 /** ############################## AUTON CODE ############################## */
 
 /**
