@@ -26,13 +26,11 @@
  *
  * The defined constants are specific for f(x) bot. For 4 inch wheels on AndyMark
  * NeveRest motors, 1120 ticks represents one rotation.
- * For f(x) bot, the robot slightly skews to the right, so we set the gyro normal
- * to
  */
 
 #include "fx_header.h"
 
-#define GYRO_NORMAL 602
+#define GYRO_NORMAL 600
 
 /**
  * Task that runs synchronously to the main task.
@@ -128,8 +126,8 @@ void driveStraightEncoders(int speed, int encoderTicks) {
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
     int deviation = normalizeDeviation(
     		averageMotors(driveFL, driveBL) - averageMotors(driveFR, driveBR));
-   	int leftSpeed = speed - (deviation * sgn(speed));
-    int rightSpeed = speed + (deviation * sgn(speed));
+   	int leftSpeed = speed - deviation;
+    int rightSpeed = speed + deviation;
     driveMotors(leftSpeed, rightSpeed);
   }
   stopMotors();
@@ -171,8 +169,8 @@ void activateLift(int speed, int encoderTicks) {
          abs(nMotorEncoder[lift2]) < abs(encoderTicks)) {
     int deviation = normalizeDeviation(
     		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
-    motor[lift1] = normalizeSpeed(speed - (deviation * sgn(speed)));
-    motor[lift2] = normalizeSpeed(speed + (deviation * sgn(speed)));
+    motor[lift1] = normalizeSpeed(speed - deviation);
+    motor[lift2] = normalizeSpeed(speed + deviation);
   }
   stopMotors();
   clearEncoders();
@@ -195,7 +193,7 @@ void auton0() {
   clearEncoders();
   initializeServos();
 
-  driveStraightGyro(-30, 2000);
+  driveStraightGyro(-40, 5000);
   driveStraightEncoders(-100, 4500);
   wait1Msec(1000);
 }
@@ -207,8 +205,8 @@ void auton1() {
   clearEncoders();
   initializeServos();
 
-  driveStraightGyro(-30, 2000);
-  driveStraightEncoders(-100, 4900);
+  driveStraightGyro(-40, 5000);
+  driveStraightEncoders(-100, 2000);
   driveMotors(-100, 100, 2000);
   wait1Msec(1000);
   bFloatDuringInactiveMotorPWM = false;
@@ -242,7 +240,7 @@ void auton2() {
   clearEncoders();
   initializeServos();
 
-  driveStraightGyro(-40, 2000);
+  driveStraightGyro(-50, 2000);
   driveStraightEncoders(-100, 4300);
 }
 

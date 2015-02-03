@@ -156,8 +156,8 @@ task main() {
       } else {
 	    	int deviation = normalizeDeviation(
 		    		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
-		    motor[lift1] = normalizeSpeed(-100 + deviation);
-		    motor[lift2] = normalizeSpeed(-100 - deviation);
+		    motor[lift1] = normalizeSpeed(-100 - deviation);
+		    motor[lift2] = normalizeSpeed(-100 + deviation);
       }
     } else {
       motor[lift1] = 0;

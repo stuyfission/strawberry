@@ -56,8 +56,8 @@ int normalizeDeviation (int deviation) {
 }
 
 /**
- * @param tMotor The name of the front motor on a side.
- * @param tMotor The name of the back motor on the same side.
+ * @param tMotor The name of the first motor to average.
+ * @param tMotor The name of the second motor to average.
  * @return The average of the encoder values of the two specified motors.
  */
 int averageMotors(tMotor motor1, tMotor motor2) {
