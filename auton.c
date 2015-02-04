@@ -125,8 +125,8 @@ void driveStraightEncoders(int speed, int encoderTicks) {
   while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
     int deviation = normalizeDeviation(
-    		averageMotors(driveFL, driveBL) - averageMotors(driveFR, driveBR));
-   	int leftSpeed = speed - deviation;
+                                       averageMotors(driveFL, driveBL) - averageMotors(driveFR, driveBR));
+    int leftSpeed = speed - deviation;
     int rightSpeed = speed + deviation;
     driveMotors(leftSpeed, rightSpeed);
   }
@@ -148,8 +148,8 @@ void driveStraightGyro(int speed, int encoderTicks) {
   while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
     int deviation = normalizeDeviation(
-    		SensorValue[gyro] - GYRO_NORMAL);
-   	int leftSpeed = speed - (deviation * sgn(speed));
+                                       SensorValue[gyro] - GYRO_NORMAL);
+    int leftSpeed = speed - (deviation * sgn(speed));
     int rightSpeed = speed + (deviation * sgn(speed));
     driveMotors(leftSpeed, rightSpeed);
   }
@@ -168,7 +168,7 @@ void activateLift(int speed, int encoderTicks) {
   while (abs(nMotorEncoder[lift1]) < abs(encoderTicks) &&
          abs(nMotorEncoder[lift2]) < abs(encoderTicks)) {
     int deviation = normalizeDeviation(
-    		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
+                                       nMotorEncoder[lift1] - nMotorEncoder[lift2]);
     motor[lift1] = normalizeSpeed(speed - deviation);
     motor[lift2] = normalizeSpeed(speed + deviation);
   }
@@ -177,21 +177,21 @@ void activateLift(int speed, int encoderTicks) {
 }
 
 void locateGoal() {
-	while (SensorValue[sonar] > 250) {
-		driveMotors(-40, 40);
-	}
-	driveMotors(20, -20, 220);
-	stopMotors();
+  while (SensorValue[sonar] > 250) {
+    driveMotors(-40, 40);
+  }
+  driveMotors(20, -20, 220);
+  stopMotors();
 }
 
 void rampAcceleration(int totalChange, int duration) {
-	for (int i = 0; i < duration; i += 20) {
-		motor[driveBL] = motor[driveBL] + (totalChange / 20);
-		motor[driveBR] = motor[driveBR] + (totalChange / 20);
-		motor[driveFL] = motor[driveFL] + (totalChange / 20);
-		motor[driveFR] = motor[driveFR] + (totalChange / 20);
-		wait1Msec(20);
-	}
+  for (int i = 0; i < duration; i += 20) {
+    motor[driveBL] = motor[driveBL] + (totalChange / 20);
+    motor[driveBR] = motor[driveBR] + (totalChange / 20);
+    motor[driveFL] = motor[driveFL] + (totalChange / 20);
+    motor[driveFR] = motor[driveFR] + (totalChange / 20);
+    wait1Msec(20);
+  }
 }
 
 /** ############################## AUTON CODE ############################## */
@@ -238,9 +238,9 @@ void auton1() {
   bFloatDuringInactiveMotorPWM = true;
   activateLift(-50, 2500);
   /*
-	driveMotors(100, 0, 4300);
-	driveStraight(-100, 5000);
-	wait1Msec(1000);*/
+    driveMotors(100, 0, 4300);
+    driveStraight(-100, 5000);
+    wait1Msec(1000);*/
 }
 
 /**
