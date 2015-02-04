@@ -30,7 +30,7 @@
 
 #include "fx_header.h"
 
-#define GYRO_NORMAL 600
+#define GYRO_NORMAL 599
 
 /**
  * Task that runs synchronously to the main task.
@@ -147,7 +147,7 @@ void driveStraightGyro(int speed, int encoderTicks) {
   clearEncoders();
   while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
-    int deviation = normalizeDeviation(
+    int deviation = 2.85 * normalizeDeviation(
                                        SensorValue[gyro] - GYRO_NORMAL);
     int leftSpeed = speed - (deviation * sgn(speed));
     int rightSpeed = speed + (deviation * sgn(speed));
@@ -178,19 +178,18 @@ void activateLift(int speed, int encoderTicks) {
 
 void locateGoal() {
   while (SensorValue[sonar] > 250) {
-    driveMotors(-40, 40);
+    driveMotors(-30, 30);
   }
-  driveMotors(20, -20, 220);
+  stopMotors();
+  wait1Msec(1000);
+  driveMotors(20, -20, 200);
   stopMotors();
 }
 
-void rampAcceleration(int totalChange, int duration) {
-  for (int i = 0; i < duration; i += 20) {
-    motor[driveBL] = motor[driveBL] + (totalChange / 20);
-    motor[driveBR] = motor[driveBR] + (totalChange / 20);
-    motor[driveFL] = motor[driveFL] + (totalChange / 20);
-    motor[driveFR] = motor[driveFR] + (totalChange / 20);
-    wait1Msec(20);
+void rampAcceleration() {
+  for (int i = 0; i < 100; i += 5) {
+    driveMotors(i, i);
+    wait1Msec(400);
   }
 }
 
@@ -212,20 +211,20 @@ void auton0() {
  * Autonomous code that scores in the medium goal.
  */
 void auton1() {
-  clearEncoders();
+	clearEncoders();
   initializeServos();
-
-  driveStraightGyro(-40, 5000);
-  driveStraightEncoders(-100, 2000);
+	wait1Msec(1000);
+  driveStraightGyro(-100, 7000);
   driveMotors(-100, 100, 2000);
+  driveStraightGyro(100, 750);
   wait1Msec(1000);
   bFloatDuringInactiveMotorPWM = false;
   locateGoal();
-  driveStraightGyro(100, 500);
+  driveStraightGyro(100, 750);
 
   motor[acquirer] = -50;
-  motor[acquirer] = 0;
   wait1Msec(2000);
+  motor[acquirer] = 0;
 
   activateLift(100, 2500);
 
@@ -236,7 +235,7 @@ void auton1() {
   wait1Msec(1000);
 
   bFloatDuringInactiveMotorPWM = true;
-  activateLift(-50, 2500);
+  activateLift(-50, 2250);
   /*
     driveMotors(100, 0, 4300);
     driveStraight(-100, 5000);
@@ -258,6 +257,6 @@ task main() {
   //waitForStart();
   StartTask(outputEncoderValues);
   bFloatDuringInactiveMotorPWM = true;
-  auton1();
+ 	auton1();
   StopAllTasks();
 }
