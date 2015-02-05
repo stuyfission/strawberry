@@ -30,7 +30,7 @@
 
 #include "fx_header.h"
 
-#define GYRO_NORMAL 599
+#define GYRO_NORMAL 596
 
 /**
  * Task that runs synchronously to the main task.
@@ -147,7 +147,7 @@ void driveStraightGyro(int speed, int encoderTicks) {
   clearEncoders();
   while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
-    int deviation = 2.85 * normalizeDeviation(
+    int deviation = 3 * normalizeDeviation(
                                        SensorValue[gyro] - GYRO_NORMAL);
     int leftSpeed = speed - (deviation * sgn(speed));
     int rightSpeed = speed + (deviation * sgn(speed));
@@ -178,11 +178,11 @@ void activateLift(int speed, int encoderTicks) {
 
 void locateGoal() {
   while (SensorValue[sonar] > 250) {
-    driveMotors(-30, 30);
+    driveMotors(-25, 25);
   }
   stopMotors();
   wait1Msec(1000);
-  driveMotors(20, -20, 200);
+  driveMotors(20, -20, 50);
   stopMotors();
 }
 
@@ -214,28 +214,31 @@ void auton1() {
 	clearEncoders();
   initializeServos();
 	wait1Msec(1000);
-  driveStraightGyro(-100, 7000);
-  driveMotors(-100, 100, 2000);
+  driveStraightGyro(-100, 6900);
+  driveMotors(-100, 100, 1600);
   driveStraightGyro(100, 750);
   wait1Msec(1000);
   bFloatDuringInactiveMotorPWM = false;
   locateGoal();
-  driveStraightGyro(100, 750);
+  driveStraightGyro(100, 900);
 
   motor[acquirer] = -50;
   wait1Msec(2000);
   motor[acquirer] = 0;
 
-  activateLift(100, 2500);
-
-  servo[liftBox] = 150;
   servo[goalClamp] = 200;
+  driveMotors(0, -30, 3000);
+  driveMotors(-30, 30, 400);
+  driveMotors(30, 30, 600);
+  wait1Msec(1000);
+  activateLift(100, 2500);
+  servo[liftBox] = 150;
   wait1Msec(1000);
   servo[liftBox] = 0;
   wait1Msec(1000);
 
   bFloatDuringInactiveMotorPWM = true;
-  activateLift(-50, 2250);
+  activateLift(-50, 2000);
   /*
     driveMotors(100, 0, 4300);
     driveStraight(-100, 5000);
