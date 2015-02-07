@@ -125,7 +125,7 @@ void driveStraightEncoders(int speed, int encoderTicks) {
   while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
     int deviation = normalizeDeviation(
-                                       averageMotors(driveFL, driveBL) - averageMotors(driveFR, driveBR));
+    		averageMotors(driveFL, driveBL) - averageMotors(driveFR, driveBR));
     int leftSpeed = speed - deviation;
     int rightSpeed = speed + deviation;
     driveMotors(leftSpeed, rightSpeed);
@@ -148,7 +148,7 @@ void driveStraightGyro(int speed, int encoderTicks) {
   while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
     int deviation = 3 * normalizeDeviation(
-                                       SensorValue[gyro] - GYRO_NORMAL);
+    		SensorValue[gyro] - GYRO_NORMAL);
     int leftSpeed = speed - (deviation * sgn(speed));
     int rightSpeed = speed + (deviation * sgn(speed));
     driveMotors(leftSpeed, rightSpeed);
@@ -178,12 +178,12 @@ void activateLift(int speed, int encoderTicks) {
 
 void locateGoal() {
   while (SensorValue[sonar] > 250) {
-    driveMotors(-25, 25);
+    driveMotors(-20, 20);
   }
   stopMotors();
   wait1Msec(1000);
-  driveMotors(20, -20, 50);
-  stopMotors();
+  driveMotors(20, -20, 150);
+  wait1Msec(1000);
 }
 
 void rampAcceleration() {
@@ -214,13 +214,13 @@ void auton1() {
 	clearEncoders();
   initializeServos();
 	wait1Msec(1000);
-  driveStraightGyro(-100, 6900);
+  driveStraightGyro(-100, 6700);
   driveMotors(-100, 100, 1600);
-  driveStraightGyro(100, 750);
+  driveStraightGyro(100, 1200);
   wait1Msec(1000);
   bFloatDuringInactiveMotorPWM = false;
   locateGoal();
-  driveStraightGyro(100, 900);
+  driveMotors(20, 20, 1200);
 
   motor[acquirer] = -50;
   wait1Msec(2000);
@@ -236,9 +236,9 @@ void auton1() {
   wait1Msec(1000);
   servo[liftBox] = 0;
   wait1Msec(1000);
+  activateLift(-50, 2000);
 
   bFloatDuringInactiveMotorPWM = true;
-  activateLift(-50, 2000);
   /*
     driveMotors(100, 0, 4300);
     driveStraight(-100, 5000);
