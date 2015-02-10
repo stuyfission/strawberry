@@ -181,9 +181,9 @@ void locateGoal() {
     driveMotors(-20, 20);
   }
   stopMotors();
-  wait1Msec(1000);
+  wait1Msec(500);
   driveMotors(20, -20, 150);
-  wait1Msec(1000);
+  wait1Msec(500);
 }
 
 void rampAcceleration() {
@@ -213,7 +213,6 @@ void auton0() {
 void auton1() {
 	clearEncoders();
   initializeServos();
-	wait1Msec(1000);
   driveStraightGyro(-100, 6700);
   driveMotors(-100, 100, 1600);
   driveStraightGyro(100, 1200);
@@ -223,20 +222,22 @@ void auton1() {
   driveMotors(20, 20, 1200);
 
   motor[acquirer] = -50;
-  wait1Msec(2000);
+  wait1Msec(1000);
   motor[acquirer] = 0;
 
   servo[goalClamp] = 200;
-  driveMotors(0, -30, 3000);
-  driveMotors(-30, 30, 400);
+  wait1Msec(1000);
+  driveMotors(0, -30, 1200);
+  driveMotors(-30, 30, 600);
   driveMotors(30, 30, 600);
-  wait1Msec(1000);
-  activateLift(100, 2500);
+  wait1Msec(500);
+  activateLift(100, 2300);
   servo[liftBox] = 150;
-  wait1Msec(1000);
+  wait1Msec(2000);
   servo[liftBox] = 0;
-  wait1Msec(1000);
-  activateLift(-50, 2000);
+  wait1Msec(500);
+  driveMotors(-30, -30, 1200);
+  activateLift(-50, 1000);
 
   bFloatDuringInactiveMotorPWM = true;
   /*
@@ -249,17 +250,19 @@ void auton1() {
  * Defensive autonomous code that blocks the opposing center goal.
  */
 void auton2() {
-  clearEncoders();
+	clearEncoders();
   initializeServos();
-
-  driveStraightGyro(-50, 2000);
-  driveStraightEncoders(-100, 4300);
+  bFloatDuringInactiveMotorPWM = false;
+  driveStraightGyro(-100, 6300);
+  driveMotors(0, -100, 2000);
+  driveStraightGyro(-100, 3800);
+  wait1Msec(1000);
 }
 
 task main() {
   //waitForStart();
   StartTask(outputEncoderValues);
   bFloatDuringInactiveMotorPWM = true;
- 	auton1();
+ 	auton2();
   StopAllTasks();
 }
