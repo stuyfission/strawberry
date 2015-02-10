@@ -28,13 +28,13 @@ int toTicks (float inches) {
  * @param upperBound The uppermost or highest number it can be
  */
 int bound (int x, int lowerBound, int upperBound) {
-	if (x <= lowerBound) {
-		return lowerBound;
-	} else if (x >= upperBound) {
-		return upperBound;
-	} else {
-		return x;
-	}
+  if (x <= lowerBound) {
+    return lowerBound;
+  } else if (x >= upperBound) {
+    return upperBound;
+  } else {
+    return x;
+  }
 }
 
 /**
@@ -43,7 +43,7 @@ int bound (int x, int lowerBound, int upperBound) {
  * @param speed The speed to bound
  */
 int normalizeSpeed (int speed) {
-	return bound(speed, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
+  return bound(speed, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
 }
 
 /**
@@ -52,7 +52,7 @@ int normalizeSpeed (int speed) {
  * @param deviation The deviation to bound
  */
 int normalizeDeviation (int deviation) {
-	return bound(deviation, MIN_DEVIATION, MAX_DEVIATION);
+  return bound(deviation, MIN_DEVIATION, MAX_DEVIATION);
 }
 
 /**
