@@ -21,7 +21,7 @@
 /**
  * @author Alvin Lin (alvin.lin@stuypulse.com)
  * Creates a menu in which robot actions can be controlled by the
- * NXT buttons for the purpose of debugging.
+ * NXT buttons for the purpose of debugging and testing robot breakage.
  */
 
 #include "fx_header.h"
@@ -69,8 +69,8 @@ task main() {
   bool leftPressed = false;
   bool rightPressed = false;
   bool centerPressed = false;
-	string centerText1;
-	string centerText2;
+  string centerText1;
+  string centerText2;
 
   clearEncoders();
 
@@ -78,10 +78,7 @@ task main() {
     // Switching actuation modes.
     // Creates a menu to choose from.
     if (nNxtButtonPressed == 2 && !leftPressed) {
-      mode--;
-      if (mode < 0) {
-        mode += NUM_MODES;
-      }
+      mode = mode - 1 < 0 ? mode - 1 : mode + NUM_MODES - 1;
     }
     leftPressed = nNxtButtonPressed == 2;
 
@@ -100,115 +97,115 @@ task main() {
 
     // Responses for each mode.
     switch (mode) {
-	    case DRIVE_STRAIGHT_FD_MODE:
-	      nxtDisplayString(1, "%i: Straight FD", mode);
-	      if (centerPressed) {
-			    int deviation = normalizeDeviation(
-			    		averageMotors(driveFL, driveBL) - averageMotors(driveFR, driveBR));
-			   	int leftSpeed = 100 - deviation;
-			    int rightSpeed = 100 + deviation;
-			    driveMotors(leftSpeed, rightSpeed);
-	      } else {
-	        driveMotors(0, 0);
-	      }
-	      break;
+    case DRIVE_STRAIGHT_FD_MODE:
+      nxtDisplayString(1, "%i: Straight FD", mode);
+      if (centerPressed) {
+        int deviation = normalizeDeviation(averageMotors(driveFL, driveBL) -
+                                           averageMotors(driveFR, driveBR));
+        int leftSpeed = 100 - deviation;
+        int rightSpeed = 100 + deviation;
+        driveMotors(leftSpeed, rightSpeed);
+      } else {
+        driveMotors(0, 0);
+      }
+      break;
 
-	    case DRIVE_STRAIGHT_BK_MODE:
-	      nxtDisplayString(1, "%i: Straight BK", mode);
-	      if (centerPressed) {
-			    int deviation = normalizeDeviation(
-			    		averageMotors(driveFL, driveBL) - averageMotors(driveFR, driveBR));
-			   	int leftSpeed = -100 + deviation;
-			    int rightSpeed = -100 - deviation;
-			    driveMotors(leftSpeed, rightSpeed);
-	      } else {
-	        driveMotors(0, 0);
-	      }
+    case DRIVE_STRAIGHT_BK_MODE:
+      nxtDisplayString(1, "%i: Straight BK", mode);
+      if (centerPressed) {
+        int deviation = normalizeDeviation(averageMotors(driveFL, driveBL) -
+                                           averageMotors(driveFR, driveBR));
+        int leftSpeed = -100 + deviation;
+        int rightSpeed = -100 - deviation;
+        driveMotors(leftSpeed, rightSpeed);
+      } else {
+        driveMotors(0, 0);
+      }
 
-	      break;
+      break;
 
-	    case DRIVE_L_MODE:
-	      nxtDisplayString(1, "%i: Left Drive", mode);
-	      if (centerPressed) {
-	        motor[driveFL] = 100;
-	        motor[driveBL] = 100;
-	      } else {
-	        motor[driveFL] = 0;
-	        motor[driveBL] = 0;
-	      }
-	      break;
+    case DRIVE_L_MODE:
+      nxtDisplayString(1, "%i: Left Drive", mode);
+      if (centerPressed) {
+        motor[driveFL] = 100;
+        motor[driveBL] = 100;
+      } else {
+        motor[driveFL] = 0;
+        motor[driveBL] = 0;
+      }
+      break;
 
-	    case DRIVE_R_MODE:
-	      nxtDisplayString(1, "%i: Right Drive", mode);
-	      if (centerPressed) {
-	        motor[driveFR] = -100;
-	        motor[driveBR] = -100;
-	      } else {
-	        motor[driveFR] = 0;
-	        motor[driveBR] = 0;
-	      }
-	      break;
+    case DRIVE_R_MODE:
+      nxtDisplayString(1, "%i: Right Drive", mode);
+      if (centerPressed) {
+        motor[driveFR] = -100;
+        motor[driveBR] = -100;
+      } else {
+        motor[driveFR] = 0;
+        motor[driveBR] = 0;
+      }
+      break;
 
-	    case LIFT_UP_MODE:
-	      nxtDisplayString(1, "%i: Lift Up", mode);
-	      if (centerPressed) {
-			    int deviation = normalizeDeviation(
-			    		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
-			    motor[lift1] = normalizeSpeed(100 - deviation);
-			    motor[lift2] = normalizeSpeed(100 + deviation);
-	      } else {
-	        motor[lift1] = 0;
-	        motor[lift2] = 0;
-	      }
-	      break;
+    case LIFT_UP_MODE:
+      nxtDisplayString(1, "%i: Lift Up", mode);
+      if (centerPressed) {
+        int deviation = normalizeDeviation(nMotorEncoder[lift1] -
+                                           nMotorEncoder[lift2]);
+        motor[lift1] = normalizeSpeed(100 - deviation);
+        motor[lift2] = normalizeSpeed(100 + deviation);
+      } else {
+        motor[lift1] = 0;
+        motor[lift2] = 0;
+      }
+      break;
 
-	    case LIFT_DOWN_MODE:
-	      nxtDisplayString(1, "%i: Lift Down", mode);
-	      if (centerPressed) {
-			    int deviation = normalizeDeviation(
-			    		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
-			    motor[lift1] = normalizeSpeed(-100 + deviation);
-			    motor[lift2] = normalizeSpeed(-100 - deviation);
-	      } else {
-	        motor[lift1] = 0;
-	        motor[lift2] = 0;
-	      }
-	      break;
+    case LIFT_DOWN_MODE:
+      nxtDisplayString(1, "%i: Lift Down", mode);
+      if (centerPressed) {
+        int deviation = normalizeDeviation(nMotorEncoder[lift1] -
+                                           nMotorEncoder[lift2]);
+        motor[lift1] = normalizeSpeed(-100 + deviation);
+        motor[lift2] = normalizeSpeed(-100 - deviation);
+      } else {
+        motor[lift1] = 0;
+        motor[lift2] = 0;
+      }
+      break;
 
-	    case ACQUIRER_MODE:
-	      nxtDisplayString(1, "%i: Acquirer", mode);
-	      if (centerPressed) {
-	        motor[acquirer] = -50;
-	      } else {
-	        motor[acquirer] = 0;
-	      }
-	      break;
+    case ACQUIRER_MODE:
+      nxtDisplayString(1, "%i: Acquirer", mode);
+      if (centerPressed) {
+        motor[acquirer] = -50;
+      } else {
+        motor[acquirer] = 0;
+      }
+      break;
 
-	    case GOAL_CLAMP_MODE:
-	      nxtDisplayString(1, "%i: Goal Clamp", mode);
-	      if (centerPressed) {
-	        servo[goalClamp] = 0;
-	      } else {
-	        servo[goalClamp] = 200;
-	      }
-	      break;
+    case GOAL_CLAMP_MODE:
+      nxtDisplayString(1, "%i: Goal Clamp", mode);
+      if (centerPressed) {
+        servo[goalClamp] = 0;
+      } else {
+        servo[goalClamp] = 200;
+      }
+      break;
 
-	    case LIFT_BOX_MODE:
-	      nxtDisplayString(1, "%i: Lift Box", mode);
-	      if (centerPressed) {
-	        servo[liftBox] = 150;
-	      } else {
-	        servo[liftBox] = 0;
-	      }
-	      break;
+    case LIFT_BOX_MODE:
+      nxtDisplayString(1, "%i: Lift Box", mode);
+      if (centerPressed) {
+        servo[liftBox] = 150;
+      } else {
+        servo[liftBox] = 0;
+      }
+      break;
 
-    	case SENSOR_OUTPUT:
-	      nxtDisplayString(1, "%i: Sensor Output", mode);
-    		float sonarValue = SensorValue[sonar];
-    		float gyroValue = SensorValue[gyro];
-    		StringFormat(centerText1, "Sonar: %f", sonarValue);
-    		StringFormat(centerText2, "Gyro: %f", gyroValue);
-    		break;
+    case SENSOR_OUTPUT:
+      nxtDisplayString(1, "%i: Sensor Output", mode);
+      float sonarValue = SensorValue[sonar];
+      float gyroValue = SensorValue[gyro];
+      StringFormat(centerText1, "Sonar: %f", sonarValue);
+      StringFormat(centerText2, "Gyro: %f", gyroValue);
+      break;
     }
 
     // Outputs center text.

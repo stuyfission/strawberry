@@ -124,8 +124,8 @@ void driveStraightEncoders(int speed, int encoderTicks) {
   clearEncoders();
   while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
-    int deviation = normalizeDeviation(
-    		averageMotors(driveFL, driveBL) - averageMotors(driveFR, driveBR));
+    int deviation = normalizeDeviation(averageMotors(driveFL, driveBL) -
+                                       averageMotors(driveFR, driveBR));
     int leftSpeed = speed - deviation;
     int rightSpeed = speed + deviation;
     driveMotors(leftSpeed, rightSpeed);
@@ -147,8 +147,7 @@ void driveStraightGyro(int speed, int encoderTicks) {
   clearEncoders();
   while (averageMotors(driveFL, driveBL) < abs(encoderTicks) &&
          averageMotors(driveFR, driveBR) < abs(encoderTicks)) {
-    int deviation = 3 * normalizeDeviation(
-    		SensorValue[gyro] - GYRO_NORMAL);
+    int deviation = 3 * normalizeDeviation(SensorValue[gyro] - GYRO_NORMAL);
     int leftSpeed = speed - (deviation * sgn(speed));
     int rightSpeed = speed + (deviation * sgn(speed));
     driveMotors(leftSpeed, rightSpeed);
@@ -167,8 +166,8 @@ void activateLift(int speed, int encoderTicks) {
   clearEncoders();
   while (abs(nMotorEncoder[lift1]) < abs(encoderTicks) &&
          abs(nMotorEncoder[lift2]) < abs(encoderTicks)) {
-    int deviation = normalizeDeviation(
-                                       nMotorEncoder[lift1] - nMotorEncoder[lift2]);
+    int deviation = normalizeDeviation(nMotorEncoder[lift1] -
+                                       nMotorEncoder[lift2]);
     motor[lift1] = normalizeSpeed(speed - deviation);
     motor[lift2] = normalizeSpeed(speed + deviation);
   }
@@ -195,6 +194,8 @@ void rampAcceleration() {
 
 /** ############################## AUTON CODE ############################## */
 
+const int NUM_AUTONS = 3;
+
 /**
  * Autonomous code that drives down the ramp only.
  */
@@ -202,8 +203,7 @@ void auton0() {
   clearEncoders();
   initializeServos();
 
-  driveStraightGyro(-40, 5000);
-  driveStraightEncoders(-100, 4500);
+  driveStraightGyro(-100, 6700);
   wait1Msec(1000);
 }
 
@@ -211,7 +211,7 @@ void auton0() {
  * Autonomous code that scores in the medium goal.
  */
 void auton1() {
-	clearEncoders();
+  clearEncoders();
   initializeServos();
   driveStraightGyro(-100, 6700);
   driveMotors(-100, 100, 1600);
@@ -250,7 +250,7 @@ void auton1() {
  * Defensive autonomous code that blocks the opposing center goal.
  */
 void auton2() {
-	clearEncoders();
+  clearEncoders();
   initializeServos();
   bFloatDuringInactiveMotorPWM = false;
   driveStraightGyro(-100, 6300);
@@ -260,9 +260,49 @@ void auton2() {
 }
 
 task main() {
-  //waitForStart();
   StartTask(outputEncoderValues);
   bFloatDuringInactiveMotorPWM = true;
- 	auton2();
+  
+  int autonMode = 0;
+  boolean leftPressed = false;
+  boolean rightPressed = false;
+
+  while (nNxtButtonPressed != 3) {
+    // Allows the user to cycle through auton modes.
+    if (nNxtButtonPressed == 2 && !leftPressed) {
+      autonMode = autonMode - 1 < 0 ? autonMode - 1 : autonMode + NUM_AUTONS - 1;
+    }
+    leftPressed = nNxtButtonPressed == 2;
+
+    if (nNxtButtonPressed == 1 && !rightPressed) {
+      autonMode = (autonMode + 1) % NUM_AUTONS;
+    }
+    rightPressed = nNxtButtonPressed == 1;
+    
+    // Outputs the selected auton mode.
+    eraseDisplay();
+    nxtDisplayString(2, "Auton Mode: %i", autonMode);
+    nxtDisplayString(3, "Press center");
+    nxtDisplayString(4, "to select auton");
+
+    // 10 millisecond buffer
+    wait1Msec(10);
+  }
+
+  // Runs the auton after the start command is given.
+  waitForStart();
+  switch (autonMode) {
+  case 0:
+    auton0();
+    break;
+  case 1:
+    auton1();
+    break;
+  case 2:
+    auton2();
+    break;
+  }
+
+  // Stops all tasks after the auton is completed.
   StopAllTasks();
 }
