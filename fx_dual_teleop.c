@@ -143,10 +143,10 @@ task main() {
     // Joystick 2 buttons 5 and 6 raise the lift mechanism.
     // Joystick 2 buttons 7 and 8 lower the lift mechanism.
     if (joy2Btn(5) || joy2Btn(6)) {
-    	int deviation = normalizeDeviation(
-	    		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
-	    motor[lift1] = normalizeSpeed(100 - deviation);
-	    motor[lift2] = normalizeSpeed(100 + deviation);
+      int deviation = normalizeDeviation(nMotorEncoder[lift1] -
+                                         nMotorEncoder[lift2]);
+      motor[lift1] = normalizeSpeed(100 - deviation);
+      motor[lift2] = normalizeSpeed(100 + deviation);
     } else if (joy2Btn(7) || joy2Btn(8)) {
       if (liftDownLimiter &&
           nMotorEncoder[lift1] <= 0 &&
@@ -154,10 +154,10 @@ task main() {
         motor[lift1] = 0;
         motor[lift2] = 0;
       } else {
-	    	int deviation = normalizeDeviation(
-		    		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
-		    motor[lift1] = normalizeSpeed(-100 - deviation);
-		    motor[lift2] = normalizeSpeed(-100 + deviation);
+        int deviation = normalizeDeviation(nMotorEncoder[lift1] -
+                                           nMotorEncoder[lift2]);
+        motor[lift1] = normalizeSpeed(-100 - deviation);
+        motor[lift2] = normalizeSpeed(-100 + deviation);
       }
     } else {
       motor[lift1] = 0;

@@ -83,7 +83,7 @@ task main() {
       motor[driveFL] = y1;
       motor[driveBL] = y1;
       motor[driveFR] = -y2;
-	    motor[driveBR] = -y2;
+      motor[driveBR] = -y2;
     }
 
     // Outputs Joystick 1 and drive state mode to the screen.
@@ -94,9 +94,9 @@ task main() {
     nxtDisplayString(4, "Y1: %i", y1);
     nxtDisplayString(5, "lift1 %i", nMotorEncoder[lift1]);
     if (controlDriveMode) {
-    	nxtDisplayString(6, "controlled mode");
+      nxtDisplayString(6, "controlled mode");
     } else {
-    	nxtDisplayString(6, "fast mode");
+      nxtDisplayString(6, "fast mode");
     }
 
     // Joystick button 2 toggles the acquirer on and off.
@@ -134,10 +134,10 @@ task main() {
     // Joystick buttons 7 and 8 lower the lift mechanism.
     // Uses a scaling deviation formula to keep them in sync.
     if (joy1Btn(5)) {
-    	int deviation = normalizeDeviation(
-	    		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
-	    motor[lift1] = normalizeSpeed(100 - deviation);
-	    motor[lift2] = normalizeSpeed(100 + deviation);
+      int deviation = normalizeDeviation(nMotorEncoder[lift1] -
+                                         nMotorEncoder[lift2]);
+      motor[lift1] = normalizeSpeed(100 - deviation);
+      motor[lift2] = normalizeSpeed(100 + deviation);
     } else if (joy1Btn(7)) {
       if (liftDownLimiter &&
           nMotorEncoder[lift1] <= 0 &&
@@ -145,10 +145,10 @@ task main() {
         motor[lift1] = 0;
         motor[lift2] = 0;
       } else {
-	    	int deviation = normalizeDeviation(
-		    		nMotorEncoder[lift1] - nMotorEncoder[lift2]);
-		    motor[lift1] = normalizeSpeed(-100 - deviation);
-		    motor[lift2] = normalizeSpeed(-100 + deviation);
+        int deviation = normalizeDeviation(nMotorEncoder[lift1] -
+                                           nMotorEncoder[lift2]);
+        motor[lift1] = normalizeSpeed(-100 - deviation);
+        motor[lift2] = normalizeSpeed(-100 + deviation);
       }
     } else {
       motor[lift1] = 0;
