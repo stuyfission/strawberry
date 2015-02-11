@@ -24,7 +24,8 @@
  * be selected at will. The tasks and helper functions are sorted in order of
  * complexity and interdependence.
  *
- * The defined constants are specific for f(x) bot. For 4 inch wheels on AndyMark
+ * The defined constants are specific for f(x) bot.
+ * For 4 inch wheels on AndyMark
  * NeveRest motors, 1120 ticks represents one rotation.
  */
 
