@@ -40,9 +40,6 @@ const int JOYSTICK_THRESHOLD = 25;
 task main() {
   // x1, y1, x2, and y2 store the joystick values for the driver.
   int x1, y1, x2, y2;
-  // liftDownLimiter stores whether or not the limiter is active on the lift
-  // mechanism.
-  bool liftDownLimiter = true;
 
   // last* variables are for toggle states
   bool controlDriveMode = false;
@@ -135,11 +132,6 @@ task main() {
       servo[liftBox] = 0;
     }
 
-    // Joystick 2 button 4 will override the lift mechanism limiter.
-    if (joy1Btn(4)) {
-      liftDownLimiter = false;
-    }
-
     // Joystick 2 buttons 5 and 6 raise the lift mechanism.
     // Joystick 2 buttons 7 and 8 lower the lift mechanism.
     if (joy2Btn(5) || joy2Btn(6)) {
@@ -148,17 +140,10 @@ task main() {
       motor[lift1] = normalizeSpeed(100 - deviation);
       motor[lift2] = normalizeSpeed(100 + deviation);
     } else if (joy2Btn(7) || joy2Btn(8)) {
-      if (liftDownLimiter &&
-          nMotorEncoder[lift1] <= 0 &&
-          nMotorEncoder[lift2] <= 0) {
-        motor[lift1] = 0;
-        motor[lift2] = 0;
-      } else {
-        int deviation = normalizeDeviation(nMotorEncoder[lift1] -
-                                           nMotorEncoder[lift2]);
-        motor[lift1] = normalizeSpeed(-100 - deviation);
-        motor[lift2] = normalizeSpeed(-100 + deviation);
-      }
+      int deviation = normalizeDeviation(nMotorEncoder[lift1] -
+                                         nMotorEncoder[lift2]);
+      motor[lift1] = normalizeSpeed(-100 - deviation);
+      motor[lift2] = normalizeSpeed(-100 + deviation);
     } else {
       motor[lift1] = 0;
       motor[lift2] = 0;

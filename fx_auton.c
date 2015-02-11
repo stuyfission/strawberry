@@ -30,22 +30,9 @@
  */
 
 #include "fx_header.h"
+#include "JoystickDriver.c"
 
 #define GYRO_NORMAL 596
-
-/**
- * Task that runs synchronously to the main task.
- */
-task outputEncoderValues() {
-  while (true) {
-    eraseDisplay();
-    nxtDisplayString(2, "FL: %i", nMotorEncoder[driveFL]);
-    nxtDisplayString(3, "BL: %i", nMotorEncoder[driveBL]);
-    nxtDisplayString(4, "FR: %i", nMotorEncoder[driveFR]);
-    nxtDisplayString(5, "BR: %i", nMotorEncoder[driveBR]);
-    wait1Msec(10);
-  }
-}
 
 /**
  * Sets all the motor encoders back to zero.
@@ -261,12 +248,11 @@ void auton2() {
 }
 
 task main() {
-  StartTask(outputEncoderValues);
   bFloatDuringInactiveMotorPWM = true;
-  
+
   int autonMode = 0;
-  boolean leftPressed = false;
-  boolean rightPressed = false;
+  bool leftPressed = false;
+  bool rightPressed = false;
 
   while (nNxtButtonPressed != 3) {
     // Allows the user to cycle through auton modes.
@@ -279,7 +265,7 @@ task main() {
       autonMode = (autonMode + 1) % NUM_AUTONS;
     }
     rightPressed = nNxtButtonPressed == 1;
-    
+
     // Outputs the selected auton mode.
     eraseDisplay();
     nxtDisplayString(2, "Auton Mode: %i", autonMode);
