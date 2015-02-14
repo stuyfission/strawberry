@@ -164,7 +164,7 @@ void activateLift(int speed, int encoderTicks) {
 }
 
 void locateGoal() {
-  while (SensorValue[sonar] > 250) {
+  while (SensorValue[sonar] > 70) {
     driveMotors(-20, 20);
   }
   stopMotors();
@@ -203,7 +203,7 @@ void auton1() {
   initializeServos();
   driveStraightGyro(-100, 6700);
   driveMotors(-100, 100, 1600);
-  driveStraightGyro(100, 1200);
+  driveStraightGyro(100, 1100);
   wait1Msec(1000);
   bFloatDuringInactiveMotorPWM = false;
   locateGoal();
@@ -219,12 +219,12 @@ void auton1() {
   driveMotors(-30, 30, 600);
   driveMotors(30, 30, 600);
   wait1Msec(500);
-  activateLift(100, 2300);
+  activateLift(100, 2600);
   servo[liftBox] = 150;
   wait1Msec(2000);
   servo[liftBox] = 0;
   wait1Msec(500);
-  driveMotors(-30, -30, 1200);
+  driveMotors(-30, -30, 1300);
   activateLift(-50, 1000);
 
   bFloatDuringInactiveMotorPWM = true;
@@ -257,7 +257,7 @@ task main() {
   while (nNxtButtonPressed != 3) {
     // Allows the user to cycle through auton modes.
     if (nNxtButtonPressed == 2 && !leftPressed) {
-      autonMode = autonMode - 1 < 0 ? autonMode - 1 : autonMode + NUM_AUTONS - 1;
+      autonMode = autonMode - 1 < 0 ? autonMode + NUM_AUTONS - 1 : autonMode - 1;
     }
     leftPressed = nNxtButtonPressed == 2;
 

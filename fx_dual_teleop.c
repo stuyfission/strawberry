@@ -129,7 +129,7 @@ task main() {
     if (joy1Btn(3) || joy2Btn(3)) {
       servo[liftBox] = 150;
     } else {
-      servo[liftBox] = 0;
+      servo[liftBox] = 20;
     }
 
     // Joystick 2 buttons 5 and 6 raise the lift mechanism.
