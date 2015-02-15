@@ -167,6 +167,8 @@ void locateGoal() {
   while (SensorValue[sonar] > 70) {
     driveMotors(-20, 20);
   }
+  driveMotors(-20, 20);
+  wait1Msec(250);
   stopMotors();
   wait1Msec(500);
   driveMotors(20, -20, 150);
@@ -175,7 +177,7 @@ void locateGoal() {
 
 void rampAcceleration() {
   for (int i = 0; i < 100; i += 5) {
-    driveMotors(i, i);
+    driveMotors(-i, -i);
     wait1Msec(400);
   }
 }
@@ -189,7 +191,6 @@ const int NUM_AUTONS = 3;
  */
 void auton0() {
   clearEncoders();
-  initializeServos();
 
   driveStraightGyro(-100, 6700);
   wait1Msec(1000);
@@ -200,7 +201,6 @@ void auton0() {
  */
 void auton1() {
   clearEncoders();
-  initializeServos();
   driveStraightGyro(-100, 6700);
   driveMotors(-100, 100, 1600);
   driveStraightGyro(100, 1100);
@@ -239,7 +239,6 @@ void auton1() {
  */
 void auton2() {
   clearEncoders();
-  initializeServos();
   bFloatDuringInactiveMotorPWM = false;
   driveStraightGyro(-100, 6300);
   driveMotors(0, -100, 2000);
@@ -275,6 +274,8 @@ task main() {
     // 10 millisecond buffer
     wait1Msec(10);
   }
+
+  initializeServos();
 
   // Runs the auton after the start command is given.
   waitForStart();
