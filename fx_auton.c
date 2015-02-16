@@ -167,11 +167,7 @@ void locateGoal() {
   while (SensorValue[sonar] > 70) {
     driveMotors(-20, 20);
   }
-  driveMotors(-20, 20);
-  wait1Msec(250);
-  stopMotors();
-  wait1Msec(500);
-  driveMotors(20, -20, 150);
+  driveMotors(-20, 20, 150);
   wait1Msec(500);
 }
 
@@ -198,13 +194,13 @@ void auton0() {
  * Autonomous code that scores in the medium goal.
  */
 void auton1() {
-  driveStraightGyro(-100, 6700);
+  driveStraightGyro(-100, 6500);
   driveMotors(-100, 100, 1600);
   driveStraightGyro(100, 1100);
   wait1Msec(1000);
   bFloatDuringInactiveMotorPWM = false;
   locateGoal();
-  driveMotors(20, 20, 1200);
+  driveMotors(20, 20, 1000);
 
   motor[acquirer] = -50;
   wait1Msec(1000);
@@ -213,15 +209,16 @@ void auton1() {
   servo[goalClamp] = 200;
   wait1Msec(1000);
   driveMotors(0, -30, 1200);
-  driveMotors(-30, 30, 600);
-  driveMotors(30, 30, 600);
+  driveMotors(-30, 30, 450);
+  driveMotors(20, 20, 600);
   wait1Msec(500);
-  activateLift(100, 2600);
+  activateLift(100, 2400);
   servo[liftBox] = 150;
+
   wait1Msec(2000);
   servo[liftBox] = 0;
   wait1Msec(500);
-  driveMotors(-30, -30, 1300);
+  driveMotors(-30, -30, 1400);
   activateLift(-50, 1000);
 
   bFloatDuringInactiveMotorPWM = true;
@@ -242,6 +239,14 @@ void auton2() {
   wait1Msec(1000);
 }
 
+task main() {
+  bFloatDuringInactiveMotorPWM = true;
+	clearEncoders();
+	initializeServos();
+	auton1();
+}
+
+/*
 task main() {
   bFloatDuringInactiveMotorPWM = true;
 
@@ -292,4 +297,4 @@ task main() {
 
   // Stops all tasks after the auton is completed.
   StopAllTasks();
-}
+}*/

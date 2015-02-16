@@ -30,13 +30,10 @@
 #include "fx_header.h"
 
 // Control constants.
-const int CONTROL_MODE_SPEED = 25;
+const int CONTROL_MODE_SPEED = 50;
 const int JOYSTICK_THRESHOLD = 25;
 
 task main() {
-	// Sets coasting to prevent jerking.
-	bFloatDuringInactiveMotorPWM = true;
-
   // x1, y1, x2, and y2 store the joystick values for the driver.
   int x1, y1, x2, y2;
 
@@ -46,6 +43,7 @@ task main() {
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
 
+  // Resets lift motor encoders.
   nMotorEncoder[lift1] = 0;
   nMotorEncoder[lift2] = 0;
 
@@ -68,10 +66,10 @@ task main() {
     }
 
     // Joystick button 1 toggles the drive mode between slow and fast.
-    if (joy1Btn(1) && lastControlDriveMode == 0) {
+    if ((joy1Btn(1) || joy1Btn(11) || joy1Btn(12)) && lastControlDriveMode == 0) {
       controlDriveMode = !controlDriveMode;
     }
-    lastControlDriveMode = joy1Btn(1);
+    lastControlDriveMode = (joy1Btn(1) || joy1Btn(11) || joy1Btn(12));
 
     // Joystick values are assigned to the motors.
     if (controlDriveMode) {
@@ -137,8 +135,8 @@ task main() {
       motor[lift1] = normalizeSpeed(-100 - deviation);
       motor[lift2] = normalizeSpeed(-100 + deviation);
     } else {
-      motor[lift1] = 5;
-      motor[lift2] = 5;
+      motor[lift1] = 0;
+      motor[lift2] = 0;
     }
   }
 }
