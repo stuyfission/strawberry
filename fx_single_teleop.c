@@ -34,6 +34,9 @@ const int CONTROL_MODE_SPEED = 25;
 const int JOYSTICK_THRESHOLD = 25;
 
 task main() {
+	// Sets coasting to prevent jerking.
+	bFloatDuringInactiveMotorPWM = true;
+
   // x1, y1, x2, and y2 store the joystick values for the driver.
   int x1, y1, x2, y2;
 
@@ -89,7 +92,6 @@ task main() {
     nxtDisplayString(2, "Y2: %i", y2);
     nxtDisplayString(3, "X1: %i", x1);
     nxtDisplayString(4, "Y1: %i", y1);
-    nxtDisplayString(5, "lift1 %i", nMotorEncoder[lift1]);
     if (controlDriveMode) {
       nxtDisplayString(6, "controlled mode");
     } else {
@@ -111,7 +113,7 @@ task main() {
     if (joy1Btn(3)) {
       servo[liftBox] = 150;
     } else {
-      servo[liftBox] = 0;
+      servo[liftBox] = 20;
     }
 
     // Joystick buttons 5 and 7 clamp and release the rolling goal.
@@ -135,8 +137,8 @@ task main() {
       motor[lift1] = normalizeSpeed(-100 - deviation);
       motor[lift2] = normalizeSpeed(-100 + deviation);
     } else {
-      motor[lift1] = 0;
-      motor[lift2] = 0;
+      motor[lift1] = 5;
+      motor[lift2] = 5;
     }
   }
 }

@@ -190,8 +190,6 @@ const int NUM_AUTONS = 3;
  * Autonomous code that drives down the ramp only.
  */
 void auton0() {
-  clearEncoders();
-
   driveStraightGyro(-100, 6700);
   wait1Msec(1000);
 }
@@ -200,7 +198,6 @@ void auton0() {
  * Autonomous code that scores in the medium goal.
  */
 void auton1() {
-  clearEncoders();
   driveStraightGyro(-100, 6700);
   driveMotors(-100, 100, 1600);
   driveStraightGyro(100, 1100);
@@ -238,7 +235,6 @@ void auton1() {
  * Defensive autonomous code that blocks the opposing center goal.
  */
 void auton2() {
-  clearEncoders();
   bFloatDuringInactiveMotorPWM = false;
   driveStraightGyro(-100, 6300);
   driveMotors(0, -100, 2000);
@@ -275,6 +271,9 @@ task main() {
     wait1Msec(10);
   }
 
+  // Clears the encoders and initializes the servos before the autonomous
+  // program runs.
+  clearEncoders();
   initializeServos();
 
   // Runs the auton after the start command is given.

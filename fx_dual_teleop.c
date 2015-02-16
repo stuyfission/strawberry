@@ -38,6 +38,9 @@ const int CONTROL_MODE_SPEED = 25;
 const int JOYSTICK_THRESHOLD = 25;
 
 task main() {
+	// Sets coasting so that robot movement doesn't jerk.
+	bFloatDuringInactiveMotorPWM = true;
+
   // x1, y1, x2, and y2 store the joystick values for the driver.
   int x1, y1, x2, y2;
 
@@ -145,8 +148,8 @@ task main() {
       motor[lift1] = normalizeSpeed(-100 - deviation);
       motor[lift2] = normalizeSpeed(-100 + deviation);
     } else {
-      motor[lift1] = 0;
-      motor[lift2] = 0;
+      motor[lift1] = 5;
+      motor[lift2] = 5;
     }
   }
 }
