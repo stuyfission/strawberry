@@ -71,6 +71,7 @@ task main() {
   bool centerPressed = false;
   string centerText1;
   string centerText2;
+  string centerText3;
 
   clearEncoders();
 
@@ -78,7 +79,7 @@ task main() {
     // Switching actuation modes.
     // Creates a menu to choose from.
     if (nNxtButtonPressed == 2 && !leftPressed) {
-      mode = mode - 1 < 0 ? mode - 1 : mode + NUM_MODES - 1;
+      mode = mode - 1 < 0 ? mode + NUM_MODES - 1 : mode - 1;
     }
     leftPressed = nNxtButtonPressed == 2;
 
@@ -94,6 +95,7 @@ task main() {
     // Sets center text.
     centerText1 = "Press center";
     centerText2 = "button to actuate";
+    centerText3 = "";
 
     // Responses for each mode.
     switch (mode) {
@@ -201,16 +203,16 @@ task main() {
 
     case SENSOR_OUTPUT:
       nxtDisplayString(1, "%i: Sensor Output", mode);
-      float sonarValue = SensorValue[sonar];
-      float gyroValue = SensorValue[gyro];
-      StringFormat(centerText1, "Sonar: %f", sonarValue);
-      StringFormat(centerText2, "Gyro: %f", gyroValue);
+      StringFormat(centerText1, "Sonar: %7i", SensorValue[sonar]);
+      StringFormat(centerText2, "Gyro: %8i", SensorValue[gyro]);
+      StringFormat(centerText3, "Battery: %4.2f V", externalBatteryAvg / 1000.0);
       break;
     }
 
     // Outputs center text.
     nxtDisplayString(2, centerText1);
     nxtDisplayString(3, centerText2);
+    nxtDisplayString(4, centerText3);
 
     // 10 millisecond buffer.
     wait1Msec(10);
