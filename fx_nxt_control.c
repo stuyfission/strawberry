@@ -104,8 +104,8 @@ task main() {
       if (centerPressed) {
         int deviation = normalizeDeviation(averageMotors(driveFL, driveBL) -
                                            averageMotors(driveFR, driveBR));
-        int leftSpeed = 100 - deviation;
-        int rightSpeed = 100 + deviation;
+        int leftSpeed = -100 + deviation;
+        int rightSpeed = -100 - deviation;
         driveMotors(leftSpeed, rightSpeed);
       } else {
         driveMotors(0, 0);
@@ -117,8 +117,8 @@ task main() {
       if (centerPressed) {
         int deviation = normalizeDeviation(averageMotors(driveFL, driveBL) -
                                            averageMotors(driveFR, driveBR));
-        int leftSpeed = -100 + deviation;
-        int rightSpeed = -100 - deviation;
+        int leftSpeed = 100 - deviation;
+        int rightSpeed = 100 + deviation;
         driveMotors(leftSpeed, rightSpeed);
       } else {
         driveMotors(0, 0);
