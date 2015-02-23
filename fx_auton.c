@@ -180,7 +180,7 @@ void rampAcceleration() {
 
 /** ############################## AUTON CODE ############################## */
 
-const int NUM_AUTONS = 3;
+const int NUM_AUTONS = 4;
 
 /**
  * Autonomous code that drives down the ramp only.
@@ -239,14 +239,13 @@ void auton2() {
   wait1Msec(1000);
 }
 
-task main() {
-  bFloatDuringInactiveMotorPWM = true;
-	clearEncoders();
-	initializeServos();
-	auton1();
+/**
+ * Offensive auton to score in the center goal and hopefully knock over
+ * the kickstand.
+ */
+void auton3() {
 }
 
-/*
 task main() {
   bFloatDuringInactiveMotorPWM = true;
 
@@ -293,8 +292,11 @@ task main() {
   case 2:
     auton2();
     break;
+  case 3:
+    auton3();
+    break;
   }
 
   // Stops all tasks after the auton is completed.
   StopAllTasks();
-}*/
+}
