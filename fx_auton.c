@@ -1,5 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTMotor)
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
+#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     sonar,          sensorSONAR)
 #pragma config(Sensor, S4,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Motor,  mtr_S1_C1_1,     driveFL,       tmotorTetrix, openLoop)
@@ -11,8 +13,8 @@
 #pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_2,    liftBox,              tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_2,    hopperRelease,        tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_3,    hopperBlocker,        tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
@@ -51,7 +53,8 @@ void clearEncoders() {
  */
 void initializeServos() {
   servo[goalClamp] = 0; // initializes servos
-  servo[liftBox] = 0;	// initializes servos
+  servo[hopperRelease] = 0;	// initializes servos
+  servo[hopperBlocker] = 100;
   wait1Msec(1000);
 }
 
@@ -198,7 +201,6 @@ void auton1() {
   driveMotors(-100, 100, 1600);
   driveStraightGyro(100, 1100);
   wait1Msec(1000);
-  bFloatDuringInactiveMotorPWM = false;
   locateGoal();
   driveMotors(20, 20, 1000);
 
@@ -213,26 +215,19 @@ void auton1() {
   driveMotors(20, 20, 600);
   wait1Msec(500);
   activateLift(100, 2400);
-  servo[liftBox] = 150;
+  servo[hopperRelease] = 150;
 
   wait1Msec(2000);
-  servo[liftBox] = 0;
+  servo[hopperRelease] = 0;
   wait1Msec(500);
   driveMotors(-30, -30, 1400);
   activateLift(-50, 1000);
-
-  bFloatDuringInactiveMotorPWM = true;
-  /*
-    driveMotors(100, 0, 4300);
-    driveStraight(-100, 5000);
-    wait1Msec(1000);*/
 }
 
 /**
  * Defensive autonomous code that blocks the opposing center goal.
  */
 void auton2() {
-  bFloatDuringInactiveMotorPWM = false;
   driveStraightGyro(-100, 6300);
   driveMotors(0, -100, 2000);
   driveStraightGyro(-100, 3800);
@@ -244,11 +239,13 @@ void auton2() {
  * the kickstand.
  */
 void auton3() {
+	while (SensorValue[sonar] > 30) {
+		driveMotors(75, 75);
+	}
+	stopMotors();
 }
 
 task main() {
-  bFloatDuringInactiveMotorPWM = true;
-
   int autonMode = 0;
   bool leftPressed = false;
   bool rightPressed = false;

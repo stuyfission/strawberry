@@ -1,5 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTMotor)
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
+#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     sonar,          sensorSONAR)
 #pragma config(Sensor, S4,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Motor,  mtr_S1_C1_1,     driveFL,       tmotorTetrix, openLoop)
@@ -11,8 +13,8 @@
 #pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_2,    liftBox,              tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_2,    hopperRelease,              tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_3,    hopperBlocker,          tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
@@ -46,6 +48,8 @@ task main() {
   int lastControlDriveMode = 0;
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
+  bool hopperBlocked = false;
+  int lastHopperBlocked = 0;
 
   // Assumes the lifts are starting in their lowest position.
   nMotorEncoder[lift1] = 0;
@@ -127,10 +131,21 @@ task main() {
     // Joystick 1 button 3 will release the balls from the lifted box.
     // Joystick 2 button 3 will release the balls from the lifted box.
     if (joy1Btn(3) || joy2Btn(3)) {
-      servo[liftBox] = 150;
+      servo[hopperRelease] = 150;
     } else {
-      servo[liftBox] = 20;
+      servo[hopperRelease] = 20;
     }
+
+    // Joystick 2 button 4 will toggle the hopper blocker.
+    if (joy2Btn(4) && lastHopperBlocked == 0) {
+    	hopperBlocked = !hopperBlocked;
+    	if (hopperBlocked) {
+    		servo[hopperBlocker] = 0;
+    	} else {
+    		servo[hopperBlocker] = 100;
+    	}
+    }
+    lastHopperBlocked = joy2Btn(4);
 
     // Joystick 2 buttons 5 and 6 raise the lift mechanism.
     // Joystick 2 buttons 7 and 8 lower the lift mechanism.

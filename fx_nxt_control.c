@@ -1,5 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTMotor)
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
+#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     sonar,          sensorSONAR)
 #pragma config(Sensor, S4,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Motor,  mtr_S1_C1_1,     driveFL,       tmotorTetrix, openLoop)
@@ -11,8 +13,8 @@
 #pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_2,    liftBox,              tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_3,    servo3,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_2,    hopperRelease,        tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_3,    hopperBlocker,        tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
@@ -60,9 +62,10 @@ const int LIFT_UP_MODE = 4;
 const int LIFT_DOWN_MODE = 5;
 const int ACQUIRER_MODE = 6;
 const int GOAL_CLAMP_MODE = 7;
-const int LIFT_BOX_MODE = 8;
-const int SENSOR_OUTPUT = 9;
-const int NUM_MODES = 10;
+const int HOPPER_RELEASE_MODE = 8;
+const int HOPPER_BLOCK_MODE = 9;
+const int SENSOR_OUTPUT = 10;
+const int NUM_MODES = 11;
 
 task main() {
   int mode = 0;
@@ -192,14 +195,23 @@ task main() {
       }
       break;
 
-    case LIFT_BOX_MODE:
-      nxtDisplayString(1, "%i: Lift Box", mode);
+    case HOPPER_RELEASE_MODE:
+      nxtDisplayString(1, "%i: Release Hopper", mode);
       if (centerPressed) {
-        servo[liftBox] = 150;
+        servo[hopperRelease] = 150;
       } else {
-        servo[liftBox] = 0;
+        servo[hopperRelease] = 0;
       }
       break;
+
+    case HOPPER_BLOCK_MODE:
+    	nxtDisplayString(1, "%i: Block Hopper", mode);
+    	if (centerPressed) {
+    		servo[hopperBlocker] = 0;
+    	} else {
+    		servo[hopperBlocker] = 100;
+    	}
+    	break;
 
     case SENSOR_OUTPUT:
       nxtDisplayString(1, "%i: Sensor Output", mode);
