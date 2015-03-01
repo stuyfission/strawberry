@@ -120,17 +120,20 @@ task main() {
     // Joystick 2 button 2 toggles the acquirer on and off.
     if (joy2Btn(2) && lastAcquirerActive == 0) {
       acquirerActive = !acquirerActive;
-      if (acquirerActive) {
-        motor[acquirer] = -50;
-      } else {
-        motor[acquirer] = 0;
-      }
     }
     lastAcquirerActive = joy2Btn(2);
 
+    if (joy2Btn(3)) {
+      motor[acquirer] = 50;
+    } else if (acquirerActive) {
+      motor[acquirer] = -50;
+    } else {
+    	motor[acquirer] = 0;
+    }
+
     // Joystick 1 button 3 will release the balls from the lifted box.
     // Joystick 2 button 3 will release the balls from the lifted box.
-    if (joy1Btn(3) || joy2Btn(3)) {
+    if (joy1Btn(4) || joy2Btn(4)) {
       servo[hopperRelease] = 150;
     } else {
       servo[hopperRelease] = 20;
