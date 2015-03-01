@@ -13,9 +13,9 @@
 #pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_2,    hopperRelease,              tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_3,    hopperBlocker,          tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_2,    servo2,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_3,    goalClamp2,           tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_4,    hopperRelease,        tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
 
@@ -48,8 +48,6 @@ task main() {
   int lastControlDriveMode = 0;
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
-  bool hopperBlocked = false;
-  int lastHopperBlocked = 0;
 
   // Assumes the lifts are starting in their lowest position.
   nMotorEncoder[lift1] = 0;
@@ -97,9 +95,11 @@ task main() {
     // Joystick 1 buttons 6 and 8 release the rolling goal clamp.
     if (joy1Btn(6) || joy1Btn(5)) {
       servo[goalClamp] = 0;
+      servo[goalClamp2] = 0;
     }
     if (joy1Btn(7) || joy1Btn(8)) {
       servo[goalClamp] = 200;
+      servo[goalClamp2] = 200;
     }
 
     // Outputs Joystick 1 states to the screen.
@@ -135,17 +135,6 @@ task main() {
     } else {
       servo[hopperRelease] = 20;
     }
-
-    // Joystick 2 button 4 will toggle the hopper blocker.
-    if (joy2Btn(4) && lastHopperBlocked == 0) {
-    	hopperBlocked = !hopperBlocked;
-    	if (hopperBlocked) {
-    		servo[hopperBlocker] = 0;
-    	} else {
-    		servo[hopperBlocker] = 100;
-    	}
-    }
-    lastHopperBlocked = joy2Btn(4);
 
     // Joystick 2 buttons 5 and 6 raise the lift mechanism.
     // Joystick 2 buttons 7 and 8 lower the lift mechanism.

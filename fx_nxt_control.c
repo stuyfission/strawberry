@@ -13,9 +13,9 @@
 #pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_2,    hopperRelease,        tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_3,    hopperBlocker,        tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_2,    servo2,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_3,    goalClamp2,           tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_4,    hopperRelease,        tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
 
@@ -63,9 +63,8 @@ const int LIFT_DOWN_MODE = 5;
 const int ACQUIRER_MODE = 6;
 const int GOAL_CLAMP_MODE = 7;
 const int HOPPER_RELEASE_MODE = 8;
-const int HOPPER_BLOCK_MODE = 9;
-const int SENSOR_OUTPUT = 10;
-const int NUM_MODES = 11;
+const int SENSOR_OUTPUT = 9;
+const int NUM_MODES = 10;
 
 task main() {
   int mode = 0;
@@ -190,8 +189,10 @@ task main() {
       nxtDisplayString(1, "%i: Goal Clamp", mode);
       if (centerPressed) {
         servo[goalClamp] = 0;
+        servo[goalClamp2] = 0;
       } else {
         servo[goalClamp] = 200;
+        servo[goalClamp2]= 200;
       }
       break;
 
@@ -203,15 +204,6 @@ task main() {
         servo[hopperRelease] = 0;
       }
       break;
-
-    case HOPPER_BLOCK_MODE:
-    	nxtDisplayString(1, "%i: Block Hopper", mode);
-    	if (centerPressed) {
-    		servo[hopperBlocker] = 0;
-    	} else {
-    		servo[hopperBlocker] = 100;
-    	}
-    	break;
 
     case SENSOR_OUTPUT:
       nxtDisplayString(1, "%i: Sensor Output", mode);

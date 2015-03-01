@@ -13,9 +13,9 @@
 #pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_2,    hopperRelease,        tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_3,    hopperBlocker,        tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_2,    servo2,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_3,    goalClamp2,           tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_4,    hopperRelease,        tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
 
@@ -52,9 +52,9 @@ void clearEncoders() {
  * Sets the servos to their initial positions.
  */
 void initializeServos() {
-  servo[goalClamp] = 0; // initializes servos
-  servo[hopperRelease] = 0;	// initializes servos
-  servo[hopperBlocker] = 100;
+  servo[goalClamp] = 0;
+  servo[goalClamp2] = 0;
+  servo[hopperRelease] = 0;
   wait1Msec(1000);
 }
 
@@ -209,6 +209,7 @@ void auton1() {
   motor[acquirer] = 0;
 
   servo[goalClamp] = 200;
+  servo[goalClamp2] = 200;
   wait1Msec(1000);
   driveMotors(0, -30, 1200);
   driveMotors(-30, 30, 450);
@@ -235,14 +236,23 @@ void auton2() {
 }
 
 /**
- * Offensive auton to score in the center goal and hopefully knock over
- * the kickstand.
+ * Offensive auton to score in the lower goal from the parking zone.
  */
 void auton3() {
+	driveStraightGyro(100, 1000);
+	driveMotors(-100, 100, 2000);
+	driveStraightGyro(-100, 500);
 	while (SensorValue[sonar] > 30) {
 		driveMotors(75, 75);
 	}
 	stopMotors();
+	activateLift(50, 1000);
+	servo[hopperRelease] = 150;
+	wait1Msec(2000);
+	servo[hopperRelease] = 0;
+	wait1Msec(500);
+	driveMotors(-30, -30, 1400);
+	activateLift(-50, 750);
 }
 
 task main() {

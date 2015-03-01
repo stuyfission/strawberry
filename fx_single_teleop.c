@@ -13,9 +13,9 @@
 #pragma config(Motor,  mtr_S1_C4_1,     driveFR,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     driveBR,       tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalClamp,            tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_2,    hopperRelease,        tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_3,    hopperBlocker,        tServoStandard)
-#pragma config(Servo,  srvo_S2_C1_4,    servo4,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_2,    servo2,               tServoNone)
+#pragma config(Servo,  srvo_S2_C1_3,    goalClamp2,           tServoStandard)
+#pragma config(Servo,  srvo_S2_C1_4,    hopperRelease,        tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_6,    servo6,               tServoNone)
 
@@ -44,8 +44,6 @@ task main() {
   int lastControlDriveMode = 0;
   bool acquirerActive = false;
   int lastAcquirerActive = 0;
-  bool hopperBlocked = false;
-  int lastHopperBlocked = 0;
 
   // Resets lift motor encoders.
   nMotorEncoder[lift1] = 0;
@@ -118,22 +116,13 @@ task main() {
       servo[hopperRelease] = 20;
     }
 
-    // Joystick button 4 will toggle the hopper blocker.
-    if (joy1Btn(4) && lastHopperBlocked == 0) {
-    	hopperBlocked = !hopperBlocked;
-    	if (hopperBlocked) {
-    		servo[hopperBlocker] = 0;
-    	} else {
-    		servo[hopperBlocker] = 100;
-    	}
-    }
-    lastHopperBlocked = joy1Btn(4);
-
     // Joystick buttons 5 and 7 clamp and release the rolling goal.
     if (joy1Btn(6)) {
       servo[goalClamp] = 0;
+      servo[goalClamp] = 0;
     }
     if (joy1Btn(8)) {
+      servo[goalClamp] = 200;
       servo[goalClamp] = 200;
     }
 
