@@ -212,7 +212,6 @@ void auton1() {
   servo[goalClamp2] = 200;
   wait1Msec(1000);
   driveMotors(0, -30, 1200);
-  driveMotors(-30, 30, 450);
   driveMotors(20, 20, 600);
   wait1Msec(500);
   activateLift(100, 2400);
