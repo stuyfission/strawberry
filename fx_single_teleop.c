@@ -32,7 +32,7 @@
 #include "fx_header.h"
 
 // Control constants.
-const int CONTROL_MODE_SPEED = 50;
+const int CONTROL_MODE_SPEED = 25;
 const int JOYSTICK_THRESHOLD = 25;
 
 task main() {
@@ -68,10 +68,10 @@ task main() {
     }
 
     // Joystick button 1 toggles the drive mode between slow and fast.
-    if ((joy1Btn(1) || joy1Btn(11) || joy1Btn(12)) && lastControlDriveMode == 0) {
+    if (joy1Btn(1) && lastControlDriveMode == 0) {
       controlDriveMode = !controlDriveMode;
     }
-    lastControlDriveMode = (joy1Btn(1) || joy1Btn(11) || joy1Btn(12));
+    lastControlDriveMode = joy1Btn(1);
 
     // Joystick values are assigned to the motors.
     if (controlDriveMode) {
@@ -119,11 +119,11 @@ task main() {
     // Joystick buttons 5 and 7 clamp and release the rolling goal.
     if (joy1Btn(6)) {
       servo[goalClamp] = 0;
-      servo[goalClamp] = 0;
+      servo[goalClamp2] = 0;
     }
     if (joy1Btn(8)) {
       servo[goalClamp] = 200;
-      servo[goalClamp] = 200;
+      servo[goalClamp2] = 200;
     }
 
     // Joystick buttons 7 and 8 lower the lift mechanism.
