@@ -68,10 +68,10 @@ task main() {
     }
 
     // Joystick button 1 toggles the drive mode between slow and fast.
-    if (joy1Btn(1) && lastControlDriveMode == 0) {
+    if (joy1Btn(1) || joy1Btn(10) || joy1Btn(11) && lastControlDriveMode == 0) {
       controlDriveMode = !controlDriveMode;
     }
-    lastControlDriveMode = joy1Btn(1);
+    lastControlDriveMode = joy1Btn(1) || joy1Btn(10) || joy1Btn(11);
 
     // Joystick values are assigned to the motors.
     if (controlDriveMode) {
